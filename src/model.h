@@ -1,0 +1,116 @@
+#include "math.h"
+
+using namespace Math;
+
+class Triangle {
+public:
+  Vec3 vertices[3];
+  Vec3 normal, line1, line2;
+
+public:
+  Triangle() {
+    Vec3 zero(0.0f, 0.0f, 0.0f);
+    vertices[0] = zero;
+    vertices[1] = zero;
+    vertices[2] = zero;
+  }
+
+  Triangle(Vec3 v1, Vec3 v2, Vec3 v3) {
+    vertices[0] = v1;
+    vertices[1] = v2;
+    vertices[2] = v3;
+
+    line1 = v2 - v1;
+    line2 = v3 - v1;
+
+    normal = line1.cross(line2);
+    normal.normalize();
+  }
+
+  Vec3 getNormal() {
+    return normal;
+  }
+};
+
+class Cube {
+public:
+  Triangle triangles[12];
+
+public:
+  Cube() {}
+
+  void init() {
+    Vec3 v1(0.0f, 0.0f, 0.0f);
+    Vec3 v2(0.0f, 1.0f, 0.0f);
+    Vec3 v3(1.0f, 1.0f, 0.0f);
+
+    Vec3 v4(0.0f, 0.0f, 0.0f);
+    Vec3 v5(1.0f, 1.0f, 0.0f);
+    Vec3 v6(1.0f, 0.0f, 0.0f);
+
+
+    Vec3 v7(1.0f, 0.0f, 0.0f);
+    Vec3 v8(1.0f, 1.0f, 0.0f);
+    Vec3 v9(1.0f, 1.0f, 1.0f);
+
+    Vec3 v10(1.0f, 0.0f, 0.0f);
+    Vec3 v11(1.0f, 1.0f, 1.0f);
+    Vec3 v12(1.0f, 0.0f, 1.0f);
+
+
+    Vec3 v13(1.0f, 0.0f, 1.0f);
+    Vec3 v14(1.0f, 1.0f, 1.0f);
+    Vec3 v15(0.0f, 1.0f, 1.0f);
+
+    Vec3 v16(1.0f, 0.0f, 1.0f);
+    Vec3 v17(0.0f, 1.0f, 1.0f);
+    Vec3 v18(0.0f, 0.0f, 1.0f);
+
+
+    Vec3 v19(0.0f, 0.0f, 1.0f);
+    Vec3 v20(0.0f, 1.0f, 1.0f);
+    Vec3 v21(0.0f, 1.0f, 0.0f);
+
+    Vec3 v22(0.0f, 0.0f, 1.0f);
+    Vec3 v23(0.0f, 1.0f, 0.0f);
+    Vec3 v24(0.0f, 0.0f, 0.0f);
+
+  
+    Vec3 v25(0.0f, 1.0f, 0.0f);
+    Vec3 v26(0.0f, 1.0f, 1.0f);
+    Vec3 v27(1.0f, 1.0f, 1.0f);
+
+    Vec3 v28(0.0f, 1.0f, 0.0f);
+    Vec3 v29(1.0f, 1.0f, 1.0f);
+    Vec3 v30(1.0f, 1.0f, 0.0f);
+
+
+    Vec3 v31(1.0f, 0.0f, 0.0f);
+    Vec3 v32(1.0f, 0.0f, 1.0f);
+    Vec3 v33(0.0f, 0.0f, 1.0f);
+
+    Vec3 v34(1.0f, 0.0f, 0.0f);
+    Vec3 v35(0.0f, 0.0f, 1.0f);
+    Vec3 v36(0.0f, 0.0f, 0.0f);
+
+
+
+    triangles[0] = Triangle(v1, v2, v3);
+    triangles[1] = Triangle(v4, v5, v6);
+    
+    triangles[2] = Triangle(v7, v8, v9);
+    triangles[3] = Triangle(v10, v11, v12);
+    
+    triangles[4] = Triangle(v13, v14, v15);
+    triangles[5] = Triangle(v16, v17, v18);
+
+    triangles[6] = Triangle(v19, v20, v21);
+    triangles[7] = Triangle(v22, v23, v24);
+
+    triangles[8] = Triangle(v25, v26, v27);
+    triangles[9] = Triangle(v28, v29, v30);
+
+    triangles[10] = Triangle(v31, v32, v33);
+    triangles[11] = Triangle(v34, v35, v36);
+  };
+};
