@@ -45,8 +45,14 @@ int main() {
       frameBuffer.getHeight() / static_cast<float>(frameBuffer.getWidth());
   float fFovRad = 1.0f / std::tan(fFov * 0.5f * (PI / 180.0f));
 
-  Cube cube;
-  cube.init();
+  // Cube cube;
+  // cube.init();
+
+  Model teapot("models/utah_teapot_frank.obj");
+  if (!teapot.loadObjectFromFile()) {
+    std::cerr << "Failed to initialize the teapot model!" << '\n';
+    return 1;
+  }
 
   Math::Mat4 matProj;
   matProj.data[0][0] = fAspectRatio * fFovRad;
@@ -74,8 +80,8 @@ int main() {
     dt = (now - then) / 1000.0f;
 
     if (dt > 0.0166f) {
-      std::cout << "Delta: " << dt << '\n';
-      std::cout << "FPS: " << 1 / dt << '\n' << '\n';
+      // std::cout << "Delta: " << dt << '\n';
+      // std::cout << "FPS: " << 1 / dt << '\n' << '\n';
       running = window.pollEvents();
       frameBuffer.clear(BLACK);
 
@@ -99,16 +105,18 @@ int main() {
       matRotX.data[3][3] = 1;
 
       int triCount = 1;
-      for (const auto &triangle : cube.triangles) {
+      for (const auto &triangle : teapot.triangles) {
         std::vector<Vec4> temp(3), points(3);
         Vec3 line1, line2;
         Vec3 normal;
+        // std::cout << "Triangle " << triCount << ": " << '\n';
         for (int i = 0; i < 3; ++i) {
           Vec4 zRotatedVertex;
           zRotatedVertex.x = triangle.vertices[i].x;
           zRotatedVertex.y = triangle.vertices[i].y;
           zRotatedVertex.z = triangle.vertices[i].z;
           zRotatedVertex.w = 1;
+
 
           // Rotation around the z axis
           zRotatedVertex = zRotatedVertex * matRotZ;
@@ -117,7 +125,7 @@ int main() {
           Vec4 xRotatedVertex = zRotatedVertex * matRotX;
 
           // Translating the cube
-          Vec4 translatedVertex = xRotatedVertex + Vec4(1, 1, 3, 0);
+          Vec4 translatedVertex = xRotatedVertex + Vec4(0, 0, 10, 0);
           points[i] = translatedVertex;
 
           if (i == 2) {
@@ -140,7 +148,6 @@ int main() {
         }
 
         float dotProduct = normal.dot(Vec3(points[0]) - vCamera);
-        
 
         if (dotProduct < 0) {
           float shadeDot = std::abs(globalLight.dot(normal));
@@ -148,6 +155,8 @@ int main() {
           shade = 0xFF000000 | (shade << 16) | (shade << 8) | (shade);
           renderer.fillTriangle(temp[0].x, temp[0].y, temp[1].x, temp[1].y,
                                 temp[2].x, temp[2].y, shade);
+          // renderer.drawTriangle(temp[0].x, temp[0].y, temp[1].x, temp[1].y,
+          //                      temp[2].x, temp[2].y, BLACK);
         }
         ++triCount;
       }

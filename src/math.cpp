@@ -266,10 +266,12 @@ Math::Vec2::Vec2(const Vec2 &vec2) : x(vec2.x), y(vec2.y) {}
 Math::Vec2::Vec2(const Vec3 &vec3) : x(vec3.x), y(vec3.y) {}
 Math::Vec2::Vec2(const Vec4 &vec4) : x(vec4.x), y(vec4.y) {}
 
-void Math::Vec2::normalize() {
+Math::Vec2 Math::Vec2::normalize() {
   float mag = std::sqrt(x * x + y * y);
   x = x / mag;
   y = y / mag;
+
+  return *this;
 }
 
 void Math::Vec2::display() {
@@ -314,11 +316,13 @@ Math::Vec3::Vec3(const Vec2 &vec2) : x(vec2.x), y(vec2.y), z(0) {}
 Math::Vec3::Vec3(const Vec3 &vec3) : x(vec3.x), y(vec3.y), z(vec3.z) {}
 Math::Vec3::Vec3(const Vec4 &vec4) : x(vec4.x), y(vec4.y), z(vec4.z) {}
 
-void Math::Vec3::normalize() {
+Math::Vec3 Math::Vec3::normalize() {
   float mag = std::sqrt(x * x + y * y + z * z);
   x = x / mag;
   y = y / mag;
   z = z / mag;
+
+  return *this;
 }
 
 void Math::Vec3::display() {
@@ -388,12 +392,14 @@ Math::Vec4::Vec4(Vec2 &vec2) : x(vec2.x), y(vec2.y), z(0), w(0) {}
 Math::Vec4::Vec4(Vec3 &vec3) : x(vec3.x), y(vec3.y), z(vec3.z), w(0) {}
 Math::Vec4::Vec4(Vec4 &vec4) : x(vec4.x), y(vec4.y), z(vec4.z), w(vec4.w) {}
 
-void Math::Vec4::normalize() {
+Math::Vec4 Math::Vec4::normalize() {
   float mag = std::sqrt(x * x + y * y + z * z + w * w);
   x = x / mag;
   y = y / mag;
   z = z / mag;
   w = w / mag;
+
+  return *this;
 }
 
 void Math::Vec4::display() {

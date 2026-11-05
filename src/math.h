@@ -66,7 +66,7 @@ public:
   Vec2(const Vec3 &vec3);
   Vec2(const Vec4& vec4); 
 
-  void normalize();
+  Vec2 normalize();
   void display();
 
   Vec2 operator=(const Vec2& vec2);
@@ -86,7 +86,7 @@ public:
   Vec3(const Vec3 &vec3);
   Vec3(const Vec4& vec4); 
 
-  void normalize();
+  Vec3 normalize();
   void display();
 
   Vec3 cross(const Vec3& vec3);
@@ -111,7 +111,7 @@ public:
   Vec4(Vec3 &vec3);
   Vec4(Vec4 &vec4);
 
-  void normalize();
+  Vec4 normalize();
   void display();
 
   Vec4 operator=(const Vec4& Vec4);

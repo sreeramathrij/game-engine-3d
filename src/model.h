@@ -1,4 +1,8 @@
 #include "math.h"
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <sstream>
 
 using namespace Math;
 
@@ -19,16 +23,69 @@ public:
     vertices[0] = v1;
     vertices[1] = v2;
     vertices[2] = v3;
-
-    line1 = v2 - v1;
-    line2 = v3 - v1;
-
-    normal = line1.cross(line2);
-    normal.normalize();
   }
-
-  Vec3 getNormal() {
+  
+  Triangle(Vec3 v1, Vec3 v2, Vec3 v3, Vec3 normal) : normal(normal) {
+    vertices[0] = v1;
+    vertices[1] = v2;
+    vertices[2] = v3;
+  }
+  const Vec3& getNormal() const {
     return normal;
+  }
+};
+
+class Model {
+private:
+  std::string fileName;
+
+public:
+  std::vector<Triangle> triangles;
+
+public:
+  Model(const std::string& fileName) : fileName(fileName){}
+
+  bool loadObjectFromFile() {
+    std::ifstream file(fileName);
+    if(!file.is_open()) return false;
+
+    std::vector<Vec3> vertices;
+    std::vector<Vec3> normals;
+
+    while(!file.eof()) {
+      char line[128];
+      file.getline(line, 128);
+
+      std::stringstream sStream;
+      sStream << line;
+
+      char junk;
+      int trash;
+      if(line[0] == 'v' && line[1] == 'n'){
+        Vec3 vn;
+        sStream >> junk >> junk >> vn.x >> vn.y >> vn.z;
+        normals.push_back(vn);
+        //vn.display();
+      } else if(line[0] == 'v'){
+        Vec3 v;
+        sStream >> junk >> v.x >> v.y >> v.z;
+        vertices.push_back(v);
+      } else if(line[0] == 'f') {
+        int f[3];
+        int n;
+        sStream >> junk >> f[0] >> junk >> trash >> junk >> n >> f[1] >> junk >> trash >> junk >> trash >> f[2] >> junk >> trash;
+        std::cout << "F: " << f[0] << ' ' << f[1] << ' ' << f[2] << " N: " << n << '\n';
+        triangles.push_back(Triangle(vertices[f[0] - 1], vertices[f[1] - 1], vertices[f[2] - 1], normals[n - 1]));
+        std::cout << "F: " << '\n';
+        vertices[f[0] - 1].display();
+        vertices[f[1] - 1].display();
+        vertices[f[2] - 1].display();
+        
+        std::cout << " N: " << '\n';
+        normals[n - 1].display();
+      }
+    }
+    return true;
   }
 };
 
