@@ -2,259 +2,205 @@
 #include <cmath>
 #include <iostream>
 
-Math::Mat2::Mat2() {
-  data[0][0] = 0;
-  data[0][1] = 0;
-  data[1][0] = 0;
-  data[1][1] = 0;
+Math::Mat2::Mat2() : data(2, std::vector<float>(2, 0)) {}
+Math::Mat2::Mat2(float d) : data(2, std::vector<float>(2, d)) {}
+Math::Mat2::Mat2(Mat2& mat) : data(2, std::vector<float>(2, 0)) {
+  data[0][0] = mat[0][0];
+  data[0][1] = mat[0][1];
+  data[1][0] = mat[1][0];
+  data[1][1] = mat[1][1];
 }
-Math::Mat2::Mat2(float d) {
-  data[0][0] = d;
-  data[0][1] = d;
-  data[1][0] = d;
-  data[1][1] = d;
+
+std::vector<float>& Math::Mat2::operator[](int index) {
+  return data[index];
 }
-Math::Mat2::Mat2(Mat2& mat) {
-  data[0][0] = mat.data[0][0];
-  data[0][1] = mat.data[0][1];
-  data[1][0] = mat.data[1][0];
-  data[1][1] = mat.data[1][1];
-}
+
 Math::Mat2 Math::Mat2::operator+(Mat2& mat) {
   Mat2 result;
-  result.data[0][0] = data[0][0] + mat.data[0][0];
-  result.data[0][1] = data[0][1] + mat.data[0][1];
-  result.data[1][0] = data[1][0] + mat.data[1][0];
-  result.data[1][1] = data[1][1] + mat.data[1][1];
+  result[0][0] = data[0][0] + mat[0][0];
+  result[0][1] = data[0][1] + mat[0][1];
+  result[1][0] = data[1][0] + mat[1][0];
+  result[1][1] = data[1][1] + mat[1][1];
 
   return result;
 }
 Math::Mat2 Math::Mat2::operator-(Mat2& mat) {
   Mat2 result;
-  result.data[0][0] = data[0][0] - mat.data[0][0];
-  result.data[0][1] = data[0][1] - mat.data[0][1];
-  result.data[1][0] = data[1][0] - mat.data[1][0];
-  result.data[1][1] = data[1][1] - mat.data[1][1];
+  result[0][0] = data[0][0] - mat[0][0];
+  result[0][1] = data[0][1] - mat[0][1];
+  result[1][0] = data[1][0] - mat[1][0];
+  result[1][1] = data[1][1] - mat[1][1];
 
   return result;
 }
 Math::Mat2 Math::Mat2::operator*(Mat2& mat) {
   Mat2 result;
-  result.data[0][0] = data[0][0] * mat.data[0][0] + data[0][1] * mat.data[1][0];
-  result.data[0][1] = data[0][0] * mat.data[0][1] + data[0][1] * mat.data[1][1];
-  result.data[1][0] = data[1][0] * mat.data[0][0] + data[1][1] * mat.data[1][0];
-  result.data[1][1] = data[1][0] * mat.data[0][1] + data[1][1] * mat.data[1][1];
+  result[0][0] = data[0][0] * mat[0][0] + data[0][1] * mat[1][0];
+  result[0][1] = data[0][0] * mat[0][1] + data[0][1] * mat[1][1];
+  result[1][0] = data[1][0] * mat[0][0] + data[1][1] * mat[1][0];
+  result[1][1] = data[1][0] * mat[0][1] + data[1][1] * mat[1][1];
 
   return result;
 }
 
-Math::Mat3::Mat3() {
-  data[0][0] = 0;
-  data[0][1] = 0;
-  data[0][2] = 0;
-  data[1][0] = 0;
-  data[1][1] = 0;
-  data[1][2] = 0;
-  data[2][0] = 0;
-  data[2][1] = 0;
-  data[2][2] = 0;
-}
-Math::Mat3::Mat3(float d) {
-  data[0][0] = d;
-  data[0][1] = d;
-  data[0][2] = d;
-  data[1][0] = d;
-  data[1][1] = d;
-  data[1][2] = d;
-  data[2][0] = d;
-  data[2][1] = d;
-  data[2][2] = d;
+Math::Mat3::Mat3() : data(3, std::vector<float>(3, 0)) {}
+Math::Mat3::Mat3(float d) : data(3, std::vector<float>(3, d)) {}
+Math::Mat3::Mat3(Mat3& mat) {
+  data[0][0] = mat[0][0];
+  data[0][1] = mat[0][1];
+  data[0][2] = mat[0][2];
+  data[1][0] = mat[1][0];
+  data[1][1] = mat[1][1];
+  data[1][2] = mat[1][2];
+  data[2][0] = mat[2][0];
+  data[2][1] = mat[2][1];
+  data[2][2] = mat[2][2];
 }
 
-Math::Mat3::Mat3(Mat3& mat) {
-  data[0][0] = mat.data[0][0];
-  data[0][1] = mat.data[0][1];
-  data[0][2] = mat.data[0][2];
-  data[1][0] = mat.data[1][0];
-  data[1][1] = mat.data[1][1];
-  data[1][2] = mat.data[1][2];
-  data[2][0] = mat.data[2][0];
-  data[2][1] = mat.data[2][1];
-  data[2][2] = mat.data[2][2];
+std::vector<float>& Math::Mat3::operator[](int index){
+  return data[index];
 }
+
 Math::Mat3 Math::Mat3::operator+(Mat3& mat) {
   Mat3 result;
-  result.data[0][0] = data[0][0] + mat.data[0][0];
-  result.data[0][1] = data[0][1] + mat.data[0][1];
-  result.data[0][2] = data[0][2] + mat.data[0][2];
-  result.data[1][0] = data[1][0] + mat.data[1][0];
-  result.data[1][1] = data[1][1] + mat.data[1][1];
-  result.data[1][2] = data[1][2] + mat.data[1][2];
-  result.data[2][0] = data[2][0] + mat.data[2][0];
-  result.data[2][1] = data[2][1] + mat.data[2][1];
-  result.data[2][2] = data[2][2] + mat.data[2][2];
+  result[0][0] = data[0][0] + mat[0][0];
+  result[0][1] = data[0][1] + mat[0][1];
+  result[0][2] = data[0][2] + mat[0][2];
+  result[1][0] = data[1][0] + mat[1][0];
+  result[1][1] = data[1][1] + mat[1][1];
+  result[1][2] = data[1][2] + mat[1][2];
+  result[2][0] = data[2][0] + mat[2][0];
+  result[2][1] = data[2][1] + mat[2][1];
+  result[2][2] = data[2][2] + mat[2][2];
 
   return result;
 }
 Math::Mat3 Math::Mat3::operator-(Mat3& mat) {
   Mat3 result;
-  result.data[0][0] = data[0][0] - mat.data[0][0];
-  result.data[0][1] = data[0][1] - mat.data[0][1];
-  result.data[0][2] = data[0][2] - mat.data[0][2];
-  result.data[1][0] = data[1][0] - mat.data[1][0];
-  result.data[1][1] = data[1][1] - mat.data[1][1];
-  result.data[1][2] = data[1][2] - mat.data[1][2];
-  result.data[2][0] = data[2][0] - mat.data[2][0];
-  result.data[2][1] = data[2][1] - mat.data[2][1];
-  result.data[2][2] = data[2][2] - mat.data[2][2];
+  result[0][0] = data[0][0] - mat[0][0];
+  result[0][1] = data[0][1] - mat[0][1];
+  result[0][2] = data[0][2] - mat[0][2];
+  result[1][0] = data[1][0] - mat[1][0];
+  result[1][1] = data[1][1] - mat[1][1];
+  result[1][2] = data[1][2] - mat[1][2];
+  result[2][0] = data[2][0] - mat[2][0];
+  result[2][1] = data[2][1] - mat[2][1];
+  result[2][2] = data[2][2] - mat[2][2];
 
   return result;
 }
 Math::Mat3 Math::Mat3::operator*(Mat3& mat) {
   Mat3 result;
-  result.data[0][0] = data[0][0] * mat.data[0][0] + data[0][1] * mat.data[1][0] + data[0][2] * mat.data[2][0];
-  result.data[0][1] = data[0][0] * mat.data[0][1] + data[0][1] * mat.data[1][1] + data[0][2] * mat.data[2][1];
-  result.data[0][2] = data[0][0] * mat.data[0][2] + data[0][1] * mat.data[1][2] + data[0][2] * mat.data[2][2];
+  result[0][0] = data[0][0] * mat[0][0] + data[0][1] * mat[1][0] + data[0][2] * mat[2][0];
+  result[0][1] = data[0][0] * mat[0][1] + data[0][1] * mat[1][1] + data[0][2] * mat[2][1];
+  result[0][2] = data[0][0] * mat[0][2] + data[0][1] * mat[1][2] + data[0][2] * mat[2][2];
 
-  result.data[1][0] = data[1][0] * mat.data[0][0] + data[1][1] * mat.data[1][0] + data[1][2] * mat.data[2][0];
-  result.data[1][1] = data[1][0] * mat.data[0][1] + data[1][1] * mat.data[1][1] + data[1][2] * mat.data[2][1];
-  result.data[1][2] = data[1][0] * mat.data[0][2] + data[1][1] * mat.data[1][2] + data[1][2] * mat.data[2][2];
+  result[1][0] = data[1][0] * mat[0][0] + data[1][1] * mat[1][0] + data[1][2] * mat[2][0];
+  result[1][1] = data[1][0] * mat[0][1] + data[1][1] * mat[1][1] + data[1][2] * mat[2][1];
+  result[1][2] = data[1][0] * mat[0][2] + data[1][1] * mat[1][2] + data[1][2] * mat[2][2];
 
-  result.data[2][0] = data[2][0] * mat.data[0][0] + data[2][1] * mat.data[1][0] + data[2][2] * mat.data[2][0];
-  result.data[2][1] = data[2][0] * mat.data[0][1] + data[2][1] * mat.data[1][1] + data[2][2] * mat.data[2][1];
-  result.data[2][2] = data[2][0] * mat.data[0][2] + data[2][1] * mat.data[1][2] + data[2][2] * mat.data[2][2];
+  result[2][0] = data[2][0] * mat[0][0] + data[2][1] * mat[1][0] + data[2][2] * mat[2][0];
+  result[2][1] = data[2][0] * mat[0][1] + data[2][1] * mat[1][1] + data[2][2] * mat[2][1];
+  result[2][2] = data[2][0] * mat[0][2] + data[2][1] * mat[1][2] + data[2][2] * mat[2][2];
 
   return result;
 }
 
-Math::Mat4::Mat4() {
-  data[0][0] = 0;
-  data[0][1] = 0;
-  data[0][2] = 0;
-  data[0][3] = 0;
-  data[1][0] = 0;
-  data[1][1] = 0;
-  data[1][2] = 0;
-  data[1][3] = 0;
-  data[2][0] = 0;
-  data[2][1] = 0;
-  data[2][2] = 0;
-  data[2][3] = 0;
-  data[3][0] = 0;
-  data[3][1] = 0;
-  data[3][2] = 0;
-  data[3][3] = 0;
-}
-
-Math::Mat4::Mat4(float d) {
-  data[0][0] = d;
-  data[0][1] = d;
-  data[0][2] = d;
-  data[0][3] = d;
-  data[1][0] = d;
-  data[1][1] = d;
-  data[1][2] = d;
-  data[1][3] = d;
-  data[2][0] = d;
-  data[2][1] = d;
-  data[2][2] = d;
-  data[2][3] = d;
-  data[3][0] = d;
-  data[3][1] = d;
-  data[3][2] = d;
-  data[3][3] = d;
-}
-
+Math::Mat4::Mat4() : data(4, std::vector<float>(4, 0)) {}
+Math::Mat4::Mat4(float d) : data(4, std::vector<float>(4, d)) {}
 Math::Mat4::Mat4(Mat4& mat) {
-  data[0][0] = mat.data[0][0];
-  data[0][1] = mat.data[0][1];
-  data[0][2] = mat.data[0][2];
-  data[0][3] = mat.data[0][3];
-  data[1][0] = mat.data[1][0];
-  data[1][1] = mat.data[1][1];
-  data[1][2] = mat.data[1][2];
-  data[1][3] = mat.data[1][3];
-  data[2][0] = mat.data[2][0];
-  data[2][1] = mat.data[2][1];
-  data[2][2] = mat.data[2][2];
-  data[2][3] = mat.data[2][3];
-  data[3][0] = mat.data[3][0];
-  data[3][1] = mat.data[3][1];
-  data[3][2] = mat.data[3][2];
-  data[3][3] = mat.data[3][3];
+  data[0][0] = mat[0][0];
+  data[0][1] = mat[0][1];
+  data[0][2] = mat[0][2];
+  data[0][3] = mat[0][3];
+  data[1][0] = mat[1][0];
+  data[1][1] = mat[1][1];
+  data[1][2] = mat[1][2];
+  data[1][3] = mat[1][3];
+  data[2][0] = mat[2][0];
+  data[2][1] = mat[2][1];
+  data[2][2] = mat[2][2];
+  data[2][3] = mat[2][3];
+  data[3][0] = mat[3][0];
+  data[3][1] = mat[3][1];
+  data[3][2] = mat[3][2];
+  data[3][3] = mat[3][3];
+}
+
+std::vector<float>& Math::Mat4::operator[](int index){
+  return data[index];
 }
 
 Math::Mat4 Math::Mat4::operator+(Mat4& mat) {
   Mat4 result;
-  result.data[0][0] = data[0][0] + mat.data[0][0];
-  result.data[0][1] = data[0][1] + mat.data[0][1];
-  result.data[0][2] = data[0][2] + mat.data[0][2];
-  result.data[0][3] = data[0][3] + mat.data[0][3];
+  result[0][0] = data[0][0] + mat[0][0];
+  result[0][1] = data[0][1] + mat[0][1];
+  result[0][2] = data[0][2] + mat[0][2];
+  result[0][3] = data[0][3] + mat[0][3];
 
-  result.data[1][0] = data[1][0] + mat.data[1][0];
-  result.data[1][1] = data[1][1] + mat.data[1][1];
-  result.data[1][2] = data[1][2] + mat.data[1][2];
-  result.data[1][3] = data[1][3] + mat.data[1][3];
+  result[1][0] = data[1][0] + mat[1][0];
+  result[1][1] = data[1][1] + mat[1][1];
+  result[1][2] = data[1][2] + mat[1][2];
+  result[1][3] = data[1][3] + mat[1][3];
   
-  result.data[2][0] = data[2][0] + mat.data[2][0];
-  result.data[2][1] = data[2][1] + mat.data[2][1];
-  result.data[2][2] = data[2][2] + mat.data[2][2];
-  result.data[2][3] = data[2][3] + mat.data[2][3];
+  result[2][0] = data[2][0] + mat[2][0];
+  result[2][1] = data[2][1] + mat[2][1];
+  result[2][2] = data[2][2] + mat[2][2];
+  result[2][3] = data[2][3] + mat[2][3];
 
-  result.data[3][0] = data[3][0] + mat.data[3][0];
-  result.data[3][1] = data[3][1] + mat.data[3][1];
-  result.data[3][2] = data[3][2] + mat.data[3][2];
-  result.data[3][3] = data[3][3] + mat.data[3][3];
+  result[3][0] = data[3][0] + mat[3][0];
+  result[3][1] = data[3][1] + mat[3][1];
+  result[3][2] = data[3][2] + mat[3][2];
+  result[3][3] = data[3][3] + mat[3][3];
 
   return result;
 }
 Math::Mat4 Math::Mat4::operator-(Mat4& mat) {
   Mat4 result;
-  result.data[0][0] = data[0][0] - mat.data[0][0];
-  result.data[0][1] = data[0][1] - mat.data[0][1];
-  result.data[0][2] = data[0][2] - mat.data[0][2];
-  result.data[0][3] = data[0][3] - mat.data[0][3];
+  result[0][0] = data[0][0] - mat[0][0];
+  result[0][1] = data[0][1] - mat[0][1];
+  result[0][2] = data[0][2] - mat[0][2];
+  result[0][3] = data[0][3] - mat[0][3];
   
-  result.data[1][0] = data[1][0] - mat.data[1][0];
-  result.data[1][1] = data[1][1] - mat.data[1][1];
-  result.data[1][2] = data[1][2] - mat.data[1][2];
-  result.data[1][3] = data[1][3] - mat.data[1][3];
+  result[1][0] = data[1][0] - mat[1][0];
+  result[1][1] = data[1][1] - mat[1][1];
+  result[1][2] = data[1][2] - mat[1][2];
+  result[1][3] = data[1][3] - mat[1][3];
 
-  result.data[2][0] = data[2][0] - mat.data[2][0];
-  result.data[2][1] = data[2][1] - mat.data[2][1];
-  result.data[2][2] = data[2][2] - mat.data[2][2];
-  result.data[2][3] = data[2][3] - mat.data[2][3];
+  result[2][0] = data[2][0] - mat[2][0];
+  result[2][1] = data[2][1] - mat[2][1];
+  result[2][2] = data[2][2] - mat[2][2];
+  result[2][3] = data[2][3] - mat[2][3];
 
-  result.data[3][0] = data[3][0] - mat.data[3][0];
-  result.data[3][1] = data[3][1] - mat.data[3][1];
-  result.data[3][2] = data[3][2] - mat.data[3][2];
-  result.data[3][3] = data[3][3] - mat.data[3][3];
+  result[3][0] = data[3][0] - mat[3][0];
+  result[3][1] = data[3][1] - mat[3][1];
+  result[3][2] = data[3][2] - mat[3][2];
+  result[3][3] = data[3][3] - mat[3][3];
 
   return result;
 }
 
 Math::Mat4 Math::Mat4::operator*(Mat4& mat) {
-
   Mat4 result;
-  result.data[0][0] = data[0][0] * mat.data[0][0] + data[0][1] * mat.data[1][0] + data[0][2] * mat.data[2][0] + data[0][3] * mat.data[3][0];
-  result.data[0][1] = data[0][0] * mat.data[0][1] + data[0][1] * mat.data[1][1] + data[0][2] * mat.data[2][1] + data[0][3] * mat.data[3][1];
-  result.data[0][2] = data[0][0] * mat.data[0][2] + data[0][1] * mat.data[1][2] + data[0][2] * mat.data[2][2] + data[0][3] * mat.data[3][2];
-  result.data[0][3] = data[0][0] * mat.data[0][3] + data[0][1] * mat.data[1][3] + data[0][2] * mat.data[2][3] + data[0][3] * mat.data[3][3];
+  result[0][0] = data[0][0] * mat[0][0] + data[0][1] * mat[1][0] + data[0][2] * mat[2][0] + data[0][3] * mat[3][0];
+  result[0][1] = data[0][0] * mat[0][1] + data[0][1] * mat[1][1] + data[0][2] * mat[2][1] + data[0][3] * mat[3][1];
+  result[0][2] = data[0][0] * mat[0][2] + data[0][1] * mat[1][2] + data[0][2] * mat[2][2] + data[0][3] * mat[3][2];
+  result[0][3] = data[0][0] * mat[0][3] + data[0][1] * mat[1][3] + data[0][2] * mat[2][3] + data[0][3] * mat[3][3];
 
-  result.data[1][0] = data[1][0] * mat.data[0][0] + data[1][1] * mat.data[1][0] + data[1][2] * mat.data[2][0] + data[1][3] * mat.data[3][0];
-  result.data[1][1] = data[1][0] * mat.data[0][1] + data[1][1] * mat.data[1][1] + data[1][2] * mat.data[2][1] + data[1][3] * mat.data[3][1];
-  result.data[1][2] = data[1][0] * mat.data[0][2] + data[1][1] * mat.data[1][2] + data[1][2] * mat.data[2][2] + data[1][3] * mat.data[3][2];
-  result.data[1][3] = data[1][0] * mat.data[0][3] + data[1][1] * mat.data[1][3] + data[1][2] * mat.data[2][3] + data[1][3] * mat.data[3][3];
+  result[1][0] = data[1][0] * mat[0][0] + data[1][1] * mat[1][0] + data[1][2] * mat[2][0] + data[1][3] * mat[3][0];
+  result[1][1] = data[1][0] * mat[0][1] + data[1][1] * mat[1][1] + data[1][2] * mat[2][1] + data[1][3] * mat[3][1];
+  result[1][2] = data[1][0] * mat[0][2] + data[1][1] * mat[1][2] + data[1][2] * mat[2][2] + data[1][3] * mat[3][2];
+  result[1][3] = data[1][0] * mat[0][3] + data[1][1] * mat[1][3] + data[1][2] * mat[2][3] + data[1][3] * mat[3][3];
 
-  result.data[2][0] = data[2][0] * mat.data[0][0] + data[2][1] * mat.data[1][0] + data[2][2] * mat.data[2][0] + data[2][3] * mat.data[3][0];
-  result.data[2][1] = data[2][0] * mat.data[0][1] + data[2][1] * mat.data[1][1] + data[2][2] * mat.data[2][1] + data[2][3] * mat.data[3][1];
-  result.data[2][2] = data[2][0] * mat.data[0][2] + data[2][1] * mat.data[1][2] + data[2][2] * mat.data[2][2] + data[2][3] * mat.data[3][2];
-  result.data[2][3] = data[2][0] * mat.data[0][3] + data[2][1] * mat.data[1][3] + data[2][2] * mat.data[2][3] + data[2][3] * mat.data[3][3];
+  result[2][0] = data[2][0] * mat[0][0] + data[2][1] * mat[1][0] + data[2][2] * mat[2][0] + data[2][3] * mat[3][0];
+  result[2][1] = data[2][0] * mat[0][1] + data[2][1] * mat[1][1] + data[2][2] * mat[2][1] + data[2][3] * mat[3][1];
+  result[2][2] = data[2][0] * mat[0][2] + data[2][1] * mat[1][2] + data[2][2] * mat[2][2] + data[2][3] * mat[3][2];
+  result[2][3] = data[2][0] * mat[0][3] + data[2][1] * mat[1][3] + data[2][2] * mat[2][3] + data[2][3] * mat[3][3];
 
-  result.data[3][0] = data[3][0] * mat.data[0][0] + data[3][1] * mat.data[1][0] + data[3][2] * mat.data[2][0] + data[3][3] * mat.data[3][0];
-  result.data[3][1] = data[3][0] * mat.data[0][1] + data[3][1] * mat.data[1][1] + data[3][2] * mat.data[2][1] + data[3][3] * mat.data[3][1];
-  result.data[3][2] = data[3][0] * mat.data[0][2] + data[3][1] * mat.data[1][2] + data[3][2] * mat.data[2][2] + data[3][3] * mat.data[3][2];
-  result.data[3][3] = data[3][0] * mat.data[0][3] + data[3][1] * mat.data[1][3] + data[3][2] * mat.data[2][3] + data[3][3] * mat.data[3][3];
+  result[3][0] = data[3][0] * mat[0][0] + data[3][1] * mat[1][0] + data[3][2] * mat[2][0] + data[3][3] * mat[3][0];
+  result[3][1] = data[3][0] * mat[0][1] + data[3][1] * mat[1][1] + data[3][2] * mat[2][1] + data[3][3] * mat[3][1];
+  result[3][2] = data[3][0] * mat[0][2] + data[3][1] * mat[1][2] + data[3][2] * mat[2][2] + data[3][3] * mat[3][2];
+  result[3][3] = data[3][0] * mat[0][3] + data[3][1] * mat[1][3] + data[3][2] * mat[2][3] + data[3][3] * mat[3][3];
 
   return result;
 }

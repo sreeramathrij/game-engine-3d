@@ -52,12 +52,22 @@ int main(int arg, const char* args[]) {
     return 1;
   }
 
+  Math::Mat2 test;
+
+  test[0][0] = 2;
+  test[0][1] = 4;
+  test[1][0] = 7;
+  test[1][1] = 3;
+
+  std::cout << test[0][0] << ' ' << test[0][1] << '\n';
+  std::cout << test[1][0] << ' ' << test[1][1] << '\n';
+
   Math::Mat4 matProj;
-  matProj.data[0][0] = fAspectRatio * fFovRad;
-  matProj.data[1][1] = fFovRad;
-  matProj.data[2][2] = fFar / (fFar - fNear);
-  matProj.data[3][2] = (-fFar * fNear) / (fFar - fNear);
-  matProj.data[2][3] = 1.0f;
+  matProj[0][0] = fAspectRatio * fFovRad;
+  matProj[1][1] = fFovRad;
+  matProj[2][2] = fFar / (fFar - fNear);
+  matProj[3][2] = (-fFar * fNear) / (fFar - fNear);
+  matProj[2][3] = 1.0f;
 
   Mat4 matRotZ, matRotX;
   float fTheta = 2.5f;
@@ -87,20 +97,20 @@ int main(int arg, const char* args[]) {
       fThetaBy2 = fTheta / 2.0f;
 
       // Z Rotation Matrix
-      matRotZ.data[0][0] = std::cos(fTheta);
-      matRotZ.data[0][1] = std::sin(fTheta);
-      matRotZ.data[1][0] = -std::sin(fTheta);
-      matRotZ.data[1][1] = std::cos(fTheta);
-      matRotZ.data[2][2] = 1;
-      matRotZ.data[3][3] = 1;
+      matRotZ[0][0] = std::cos(fTheta);
+      matRotZ[0][1] = std::sin(fTheta);
+      matRotZ[1][0] = -std::sin(fTheta);
+      matRotZ[1][1] = std::cos(fTheta);
+      matRotZ[2][2] = 1;
+      matRotZ[3][3] = 1;
 
       // X Rotation Matrix
-      matRotX.data[0][0] = 1;
-      matRotX.data[1][1] = std::cos(fThetaBy2);
-      matRotX.data[1][2] = std::sin(fThetaBy2);
-      matRotX.data[2][1] = -std::sin(fThetaBy2);
-      matRotX.data[2][2] = std::cos(fThetaBy2);
-      matRotX.data[3][3] = 1;
+      matRotX[0][0] = 1;
+      matRotX[1][1] = std::cos(fThetaBy2);
+      matRotX[1][2] = std::sin(fThetaBy2);
+      matRotX[2][1] = -std::sin(fThetaBy2);
+      matRotX[2][2] = std::cos(fThetaBy2);
+      matRotX[3][3] = 1;
 
       int triCount = 1;
       for (const auto &triangle : mesh.triangles) {

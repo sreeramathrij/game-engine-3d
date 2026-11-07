@@ -2,6 +2,7 @@
 
 // #include <cmath>
 // #include <utility>
+#include <vector>
 
 namespace Math {
 
@@ -14,13 +15,14 @@ class Vec4;
 
 class Mat2 {
 public:
-  float data[2][2];
+  std::vector<std::vector<float>> data;
 
 public:
   Mat2();
   Mat2(float d);
   Mat2(Mat2& mat2);
 
+  std::vector<float>& operator[](int index);
   Mat2 operator+(Mat2& mat2);
   Mat2 operator-(Mat2& mat2);
   Mat2 operator*(Mat2& mat2);
@@ -28,13 +30,14 @@ public:
 
 class Mat3 {
 public:
-  float data[3][3];
+  std::vector<std::vector<float>> data;
 
 public:
   Mat3();
   Mat3(float d);
   Mat3(Mat3& mat3);
 
+  std::vector<float>& operator[](int index);
   Mat3 operator+(Mat3& mat3);
   Mat3 operator-(Mat3& mat3);
   Mat3 operator*(Mat3& mat3);
@@ -42,13 +45,14 @@ public:
 
 class Mat4 {
 public:
-  float data[4][4];
+  std::vector<std::vector<float>> data;
 
 public:
   Mat4();
   Mat4(float d);
   Mat4(Mat4& mat4);
 
+  std::vector<float>& operator[](int index);
   Mat4 operator+(Mat4& mat4);
   Mat4 operator-(Mat4& mat4);
   Mat4 operator*(Mat4& mat4);
