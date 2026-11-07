@@ -2,7 +2,6 @@
 
 // #include <cmath>
 // #include <utility>
-#include <vector>
 
 namespace Math {
 
@@ -121,5 +120,6 @@ public:
 };
 
 float triangleArea(float ax, float ay, float bx, float by, float cx, float cy);
+float intTriangleArea(int ax, int ay, int bx, int by, int cx, int cy);
 
 } // namespace Math

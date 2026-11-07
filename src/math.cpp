@@ -447,5 +447,9 @@ Math::Vec4 Math::Vec4::operator*(const Math::Mat4 &mat4) {
 
 
 float Math::triangleArea(float ax, float ay, float bx, float by, float cx, float cy) {
-  return 0.5 * (ax * (by-cy) + bx * (cy-ay) + cx * (ay-by));
+  return (ax * (by-cy) + bx * (cy-ay) + cx * (ay-by)) * 0.5;
+}
+
+float Math::intTriangleArea(int ax, int ay, int bx, int by, int cx, int cy) {
+  return (ax * (by-cy) + bx * (cy-ay) + cx * (ay-by)) * 0.5f;
 }

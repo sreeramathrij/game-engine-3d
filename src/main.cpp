@@ -4,9 +4,7 @@
 #include "renderer.h"
 #include "timer.h"
 #include "window.h"
-#include <cstdio>
 #include <iostream>
-#include <utility>
 
 constexpr uint32_t BLACK = 0xFF000000;
 constexpr uint32_t WHITE = 0xFFFFFFFF;
@@ -21,8 +19,8 @@ void drawLine(float ax, float ay, float bx, float by, uint32_t color,
 void drawRectangle(float xPos, float yPos, int width, int height,
                    uint32_t color, FrameBuffer &frameBuffer);
 
-int main() {
-  std::cout << "Initializing SDL.\n";
+int main(int arg, const char* args[]) {
+  std::cout << "Arguments: "<< arg<< "\nInitializing SDL.\n";
 
   // defining width, height of the buffer
   const int W = 1000, H = 1000;
@@ -40,16 +38,16 @@ int main() {
 
   float fNear = 0.1f;
   float fFar = 1000.0f;
-  float fFov = 90.f;
+  float fFov = 90.0f;
   float fAspectRatio =
       frameBuffer.getHeight() / static_cast<float>(frameBuffer.getWidth());
   float fFovRad = 1.0f / std::tan(fFov * 0.5f * (PI / 180.0f));
 
-  // Cube cube;
-  // cube.init();
+  Cube cube;
+  cube.init();
 
-  Model teapot("models/utah_teapot_frank.obj");
-  if (!teapot.loadObjectFromFile()) {
+  Model mesh(args[1]);
+  if (!mesh.loadObjectFromFile()) {
     std::cerr << "Failed to initialize the teapot model!" << '\n';
     return 1;
   }
@@ -66,7 +64,7 @@ int main() {
   float fThetaBy2 = fTheta / 2.0f;
   Vec3 vCamera;
 
-  Vec3 globalLight(0.0f, 0.0f, -1.0f);
+  Vec3 diffuseLightPos(0.0f, 0.0f, 0.0f);
 
   // main loop to display window
   bool running = true;
@@ -79,11 +77,11 @@ int main() {
     now = Timer::getTick();
     dt = (now - then) / 1000.0f;
 
-    if (dt > 0.0166f) {
+    if (dt > 0.016f) {
       // std::cout << "Delta: " << dt << '\n';
       // std::cout << "FPS: " << 1 / dt << '\n' << '\n';
       running = window.pollEvents();
-      frameBuffer.clear(BLACK);
+      frameBuffer.clear(0xFF884488);
 
       fTheta += 1.0f * dt;
       fThetaBy2 = fTheta / 2.0f;
@@ -105,7 +103,7 @@ int main() {
       matRotX.data[3][3] = 1;
 
       int triCount = 1;
-      for (const auto &triangle : teapot.triangles) {
+      for (const auto &triangle : mesh.triangles) {
         std::vector<Vec4> temp(3), points(3);
         Vec3 line1, line2;
         Vec3 normal;
@@ -116,7 +114,6 @@ int main() {
           zRotatedVertex.y = triangle.vertices[i].y;
           zRotatedVertex.z = triangle.vertices[i].z;
           zRotatedVertex.w = 1;
-
 
           // Rotation around the z axis
           zRotatedVertex = zRotatedVertex * matRotZ;
@@ -150,11 +147,13 @@ int main() {
         float dotProduct = normal.dot(Vec3(points[0]) - vCamera);
 
         if (dotProduct < 0) {
-          float shadeDot = std::abs(globalLight.dot(normal));
-          uint32_t shade = 160 * shadeDot + 96;
+          Vec3 lightDir = (diffuseLightPos - points[0]).normalize();
+          float shadeDot = lightDir.dot(normal);
+          uint32_t shade = 159 * std::min(1.0f, std::max(0.0f, shadeDot)) + 96;
           shade = 0xFF000000 | (shade << 16) | (shade << 8) | (shade);
-          renderer.fillTriangle(temp[0].x, temp[0].y, temp[1].x, temp[1].y,
-                                temp[2].x, temp[2].y, shade);
+          renderer.fillTriangle(temp[0].x, temp[0].y, temp[0].z, temp[1].x,
+                                temp[1].y, temp[1].z, temp[2].x, temp[2].y,
+                                temp[2].z, shade);
           // renderer.drawTriangle(temp[0].x, temp[0].y, temp[1].x, temp[1].y,
           //                      temp[2].x, temp[2].y, BLACK);
         }

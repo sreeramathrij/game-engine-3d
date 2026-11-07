@@ -1,6 +1,6 @@
 #include "renderer.h"
 #include <algorithm>
-#include <iostream>
+#include <cmath>
 
 Renderer::Renderer(FrameBuffer &frameBuffer)
     : frameBuffer(frameBuffer), width(frameBuffer.getWidth()),
@@ -38,90 +38,49 @@ void Renderer::drawTriangle(const Math::Vec2 &a, const Math::Vec2 &b,
 }
 
 void Renderer::fillTriangle(const Math::Vec2 &a, const Math::Vec2 &b,
-                            const Math::Vec2 &c, const uint32_t &color) {
-  Math::Vec2 minVertex, midVertex, maxVertex;
-  if (a.y < b.y) {
-    if (a.y < c.y) {
-      if (c.y < b.y) {
-        minVertex = a;
-        midVertex = c;
-        maxVertex = b;
-      } else {
-        minVertex = a;
-        midVertex = b;
-        maxVertex = c;
-      }
-    } else {
-      minVertex = c;
-      midVertex = a;
-      maxVertex = b;
-    }
-  } else {
-    if (b.y < c.y) {
-      if (c.y < a.y) {
-        minVertex = b;
-        midVertex = c;
-        maxVertex = a;
-      } else {
-        minVertex = b;
-        midVertex = a;
-        maxVertex = c;
-      }
-    } else {
-      minVertex = c;
-      midVertex = b;
-      maxVertex = a;
-    }
-  }
+                            const Math::Vec2 &c, const uint32_t &color) {}
 
-  if (minVertex.y == midVertex.y) {
-    drawLine(minVertex.x, minVertex.y, midVertex.x, midVertex.y, color);
-  } else {
-    for (float i = 0; i <= 1; i += 0.001) {
-      float x1 = minVertex.x + i * (midVertex.x - minVertex.x);
-      float y1 = minVertex.y + i * (midVertex.y - minVertex.y);
+void Renderer::fillTriangle(float ax, float ay, float az, float bx, float by, float bz, float cx, 
+                            float cy, float cz, const uint32_t &color) {
 
-      float x2 =
-          minVertex.x + ((y1 - minVertex.y) / (maxVertex.y - minVertex.y)) *
-                            (maxVertex.x - minVertex.x);
-      drawLine(x1, y1, x2, y1, color);
-    }
-  }
+  float aX = width * ((ax + 1) / 2);
+  float aY = (height - height * ((ay + 1) / 2));
+  float bX = width * ((bx + 1) / 2);
+  float bY = (height - height * ((by + 1) / 2));
+  float cX = width * ((cx + 1) / 2);
+  float cY = (height - height * ((cy + 1) / 2));
 
-  if (midVertex.y == maxVertex.y) {
-    drawLine(midVertex.x, midVertex.y, maxVertex.x, maxVertex.y, color);
-  } else {
-    for (float i = 0; i < 1; i += 0.001) {
-      float x1 = midVertex.x + i * (maxVertex.x - midVertex.x);
-      float y1 = midVertex.y + i * (maxVertex.y - midVertex.y);
+  int bbMinX = std::ceil(std::min({aX, bX, cX}) - 0.5f);
+  int bbMinY = std::floor(std::min({aY, bY, cY}) - 0.5f);
+  int bbMaxX = std::ceil(std::max({aX, bX, cX}) - 0.5f);
+  int bbMaxY = std::floor(std::max({aY, bY, cY}) - 0.5f);
+  float totalArea = Math::triangleArea(aX, aY, bX, bY, cX, cY);
 
-      float x2 =
-          minVertex.x + ((y1 - minVertex.y) / (maxVertex.y - minVertex.y)) *
-                            (maxVertex.x - minVertex.x);
-
-      drawLine(x1, y1, x2, y1, color);
-    }
-  }
-}
-
-void Renderer::fillTriangle(float ax, float ay, float bx, float by, float cx,
-                            float cy, const uint32_t &color) {
-  float bbMinX = std::max(-1.0f, std::min({ax, bx, cx}));
-  float bbMinY = std::max(-1.0f, std::min({ay, by, cy}));
-  float bbMaxX = std::min(1.0f, std::max({ax, bx, cx}));
-  float bbMaxY = std::min(1.0f, std::max({ay, by, cy}));
-  float totalArea = Math::triangleArea(ax, ay, bx, by, cx, cy);
+  int firstX = std::max(0, (bbMinX));
+  int lastX = std::min(width - 1, (bbMaxX));
+  int firstY = std::max(0, (bbMinY));
+  int lastY = std::min(height - 1, (bbMaxY));
 
   if (totalArea != 0) {
     float inverseTotalArea = 1 / totalArea;
-    for (float x = bbMinX; x <= bbMaxX; x += 0.001) {
-      for (float y = bbMinY; y <= bbMaxY; y += 0.001) {
-        float alpha = Math::triangleArea(x, y, bx, by, cx, cy) * inverseTotalArea;
-        float beta = Math::triangleArea(x, y, cx, cy, ax, ay) * inverseTotalArea;
-        float gamma = Math::triangleArea(x, y, ax, ay, bx, by) * inverseTotalArea;
-        if (alpha < 0 || beta < 0 || gamma < 0)
+    for (int y = firstY; y <= lastY; ++y) {
+      for (float x = firstX; x <= lastX; ++x) {
+        float px = x + 0.5f;
+        float py = y + 0.5f;
+        float alpha =
+            Math::triangleArea(px, py, bX, bY, cX, cY) * inverseTotalArea;
+        float beta =
+            Math::triangleArea(px, py, cX, cY, aX, aY) * inverseTotalArea;
+        float gamma =
+            Math::triangleArea(px, py, aX, aY, bX, bY) * inverseTotalArea;
+
+        float depth = alpha * az + beta * bz + gamma * cz;
+        if ((alpha < 0 || beta < 0 || gamma < 0)) continue;
+        if(depth >= frameBuffer.getDepth(x, y))
           continue;
-        drawPixel(x, y, color);
+
+        frameBuffer.setDepth(x, y, depth);
+        frameBuffer.setPixel(x, y, color);
       }
     }
   }

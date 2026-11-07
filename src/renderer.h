@@ -14,7 +14,7 @@ public:
   void drawTriangle(float ax, float ay, float bx, float by, float cx, float cy, const uint32_t& color);
   void drawTriangle(const Math::Vec2& a, const Math::Vec2& b, const Math::Vec2& c, const uint32_t& color);
   
-  void fillTriangle(float ax, float ay, float bx, float by, float cx, float cy, const uint32_t& color);
+  void fillTriangle(float ax, float ay, float az, float bx, float by, float bz, float cx, float cy, float cz, const uint32_t& color);
   void fillTriangle(const Math::Vec2& a, const Math::Vec2& b, const Math::Vec2& c, const uint32_t& color);
 
 private:
