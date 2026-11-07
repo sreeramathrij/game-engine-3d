@@ -9,24 +9,19 @@ using namespace Math;
 
 class Triangle {
 public:
-  Vec3 vertices[3];
+  std::vector<Vec3> vertices;
   Vec3 normal, line1, line2;
 
 public:
-  Triangle() {
-    Vec3 zero(0.0f, 0.0f, 0.0f);
-    vertices[0] = zero;
-    vertices[1] = zero;
-    vertices[2] = zero;
-  }
+  Triangle() : vertices(3, Vec3(0.0f, 0.0f, 0.0f)){}
 
-  Triangle(Vec3 v1, Vec3 v2, Vec3 v3) {
+  Triangle(Vec3 v1, Vec3 v2, Vec3 v3) : vertices(3) {
     vertices[0] = v1;
     vertices[1] = v2;
     vertices[2] = v3;
   }
 
-  Triangle(Vec3 v1, Vec3 v2, Vec3 v3, Vec3 normal) : normal(normal) {
+  Triangle(Vec3 v1, Vec3 v2, Vec3 v3, Vec3 normal) : vertices(3), normal(normal) {
     vertices[0] = v1;
     vertices[1] = v2;
     vertices[2] = v3;

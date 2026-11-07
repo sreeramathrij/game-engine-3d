@@ -45,7 +45,7 @@ Math::Mat2 Math::Mat2::operator*(Mat2& mat) {
 
 Math::Mat3::Mat3() : data(3, std::vector<float>(3, 0)) {}
 Math::Mat3::Mat3(float d) : data(3, std::vector<float>(3, d)) {}
-Math::Mat3::Mat3(Mat3& mat) {
+Math::Mat3::Mat3(Mat3& mat) : data(3, std::vector<float>(3, 0)){
   data[0][0] = mat[0][0];
   data[0][1] = mat[0][1];
   data[0][2] = mat[0][2];
@@ -108,7 +108,7 @@ Math::Mat3 Math::Mat3::operator*(Mat3& mat) {
 
 Math::Mat4::Mat4() : data(4, std::vector<float>(4, 0)) {}
 Math::Mat4::Mat4(float d) : data(4, std::vector<float>(4, d)) {}
-Math::Mat4::Mat4(Mat4& mat) {
+Math::Mat4::Mat4(Mat4& mat) : data(4, std::vector<float>(4, 0)) {
   data[0][0] = mat[0][0];
   data[0][1] = mat[0][1];
   data[0][2] = mat[0][2];
@@ -180,7 +180,7 @@ Math::Mat4 Math::Mat4::operator-(Mat4& mat) {
   return result;
 }
 
-Math::Mat4 Math::Mat4::operator*(Mat4& mat) {
+Math::Mat4 Math::Mat4::operator*(Mat4 mat) {
   Mat4 result;
   result[0][0] = data[0][0] * mat[0][0] + data[0][1] * mat[1][0] + data[0][2] * mat[2][0] + data[0][3] * mat[3][0];
   result[0][1] = data[0][0] * mat[0][1] + data[0][1] * mat[1][1] + data[0][2] * mat[2][1] + data[0][3] * mat[3][1];
@@ -336,6 +336,7 @@ Math::Vec4::Vec4() : x(0), y(0), z(0), w(0) {}
 Math::Vec4::Vec4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
 Math::Vec4::Vec4(Vec2 &vec2) : x(vec2.x), y(vec2.y), z(0), w(0) {}
 Math::Vec4::Vec4(Vec3 &vec3) : x(vec3.x), y(vec3.y), z(vec3.z), w(0) {}
+Math::Vec4::Vec4(const Vec3& vec3, float w) : x(vec3.x), y(vec3.y), z(vec3.z), w(w) {}
 Math::Vec4::Vec4(Vec4 &vec4) : x(vec4.x), y(vec4.y), z(vec4.z), w(vec4.w) {}
 
 Math::Vec4 Math::Vec4::normalize() {

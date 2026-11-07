@@ -4,7 +4,7 @@
 #include "renderer.h"
 #include "timer.h"
 #include "window.h"
-#include <iostream>
+#include "transforms.h"
 
 constexpr uint32_t BLACK = 0xFF000000;
 constexpr uint32_t WHITE = 0xFFFFFFFF;
@@ -20,7 +20,13 @@ void drawRectangle(float xPos, float yPos, int width, int height,
                    uint32_t color, FrameBuffer &frameBuffer);
 
 int main(int arg, const char* args[]) {
-  std::cout << "Arguments: "<< arg<< "\nInitializing SDL.\n";
+  std::cout << "Arguments: "<< arg << '\n';
+  if(arg != 2) {
+    std::cerr << "No model filepath given!" << '\n';
+    return 1;
+  }
+
+  std::cout << "Initializing SDL.\n";
 
   // defining width, height of the buffer
   const int W = 1000, H = 1000;
@@ -62,14 +68,9 @@ int main(int arg, const char* args[]) {
   std::cout << test[0][0] << ' ' << test[0][1] << '\n';
   std::cout << test[1][0] << ' ' << test[1][1] << '\n';
 
-  Math::Mat4 matProj;
-  matProj[0][0] = fAspectRatio * fFovRad;
-  matProj[1][1] = fFovRad;
-  matProj[2][2] = fFar / (fFar - fNear);
-  matProj[3][2] = (-fFar * fNear) / (fFar - fNear);
-  matProj[2][3] = 1.0f;
+  Math::Mat4 matProj = projectionMatrix(fFov, fAspectRatio, fNear, fFar);
 
-  Mat4 matRotZ, matRotX;
+  Math::Mat4 matRotZ, matRotX;
   float fTheta = 2.5f;
   float fThetaBy2 = fTheta / 2.0f;
   Vec3 vCamera;
@@ -96,43 +97,19 @@ int main(int arg, const char* args[]) {
       fTheta += 1.0f * dt;
       fThetaBy2 = fTheta / 2.0f;
 
-      // Z Rotation Matrix
-      matRotZ[0][0] = std::cos(fTheta);
-      matRotZ[0][1] = std::sin(fTheta);
-      matRotZ[1][0] = -std::sin(fTheta);
-      matRotZ[1][1] = std::cos(fTheta);
-      matRotZ[2][2] = 1;
-      matRotZ[3][3] = 1;
-
-      // X Rotation Matrix
-      matRotX[0][0] = 1;
-      matRotX[1][1] = std::cos(fThetaBy2);
-      matRotX[1][2] = std::sin(fThetaBy2);
-      matRotX[2][1] = -std::sin(fThetaBy2);
-      matRotX[2][2] = std::cos(fThetaBy2);
-      matRotX[3][3] = 1;
-
       int triCount = 1;
+
+      Mat4 transformationMatrix = (rotationMatrix(Math::Vec3(fThetaBy2, 0, fTheta)) * translationMatrix(Math::Vec3(0, 0, 10)));
       for (const auto &triangle : mesh.triangles) {
         std::vector<Vec4> temp(3), points(3);
         Vec3 line1, line2;
         Vec3 normal;
         // std::cout << "Triangle " << triCount << ": " << '\n';
         for (int i = 0; i < 3; ++i) {
-          Vec4 zRotatedVertex;
-          zRotatedVertex.x = triangle.vertices[i].x;
-          zRotatedVertex.y = triangle.vertices[i].y;
-          zRotatedVertex.z = triangle.vertices[i].z;
-          zRotatedVertex.w = 1;
-
-          // Rotation around the z axis
-          zRotatedVertex = zRotatedVertex * matRotZ;
-
-          // Rotation around the x axis
-          Vec4 xRotatedVertex = zRotatedVertex * matRotX;
+          Vec4 initialVertex = Vec4(triangle.vertices[i], 1.0f);
 
           // Translating the cube
-          Vec4 translatedVertex = xRotatedVertex + Vec4(0, 0, 10, 0);
+          Vec4 translatedVertex = initialVertex * transformationMatrix;
           points[i] = translatedVertex;
 
           if (i == 2) {
@@ -143,8 +120,7 @@ int main(int arg, const char* args[]) {
             normal.normalize();
           }
 
-          Vec4 projectedVertex(translatedVertex);
-          projectedVertex = projectedVertex * matProj;
+          Vec4 projectedVertex = translatedVertex * matProj;
           if (projectedVertex.w != 0.0f) {
             projectedVertex.x = projectedVertex.x / projectedVertex.w;
             projectedVertex.y = projectedVertex.y / projectedVertex.w;

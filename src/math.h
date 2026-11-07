@@ -55,7 +55,7 @@ public:
   std::vector<float>& operator[](int index);
   Mat4 operator+(Mat4& mat4);
   Mat4 operator-(Mat4& mat4);
-  Mat4 operator*(Mat4& mat4);
+  Mat4 operator*(Mat4 mat4);
 };
 
 class Vec2 {
@@ -112,6 +112,7 @@ public:
   Vec4(float x, float y, float z, float w);
   Vec4(Vec2 &vec2);
   Vec4(Vec3 &vec3);
+  Vec4(const Vec3& vec3, float w);
   Vec4(Vec4 &vec4);
 
   Vec4 normalize();
