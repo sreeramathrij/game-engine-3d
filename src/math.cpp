@@ -391,6 +391,14 @@ Math::Vec4 Math::Vec4::operator*(const Math::Mat4 &mat4) {
 
   return result;
 }
+Math::Vec4 Math::Vec4::operator/(const float c){
+
+  x = x / c;
+  y = y / c;
+  z = z / c;
+
+  return *this;
+}
 
 
 float Math::triangleArea(float ax, float ay, float bx, float by, float cx, float cy) {
@@ -400,3 +408,10 @@ float Math::triangleArea(float ax, float ay, float bx, float by, float cx, float
 float Math::intTriangleArea(int ax, int ay, int bx, int by, int cx, int cy) {
   return (ax * (by-cy) + bx * (cy-ay) + cx * (ay-by)) * 0.5f;
 }
+
+float Math::dot(const Math::Vec3& v1, const Math::Vec3& v2) {
+  return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+}
+
+
+

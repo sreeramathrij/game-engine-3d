@@ -6,6 +6,7 @@
 
 namespace Math {
 
+
 class Mat2;
 class Mat3;
 class Mat4;
@@ -122,9 +123,11 @@ public:
   Vec4 operator+(const Vec4& Vec4);
   Vec4 operator-(const Vec4& Vec4);
   Vec4 operator*(const Mat4& mat4);
+  Vec4 operator/(const float c);
 };
 
 float triangleArea(float ax, float ay, float bx, float by, float cx, float cy);
 float intTriangleArea(int ax, int ay, int bx, int by, int cx, int cy);
 
+float dot(const Vec3& v1, const Vec3& v2);
 } // namespace Math

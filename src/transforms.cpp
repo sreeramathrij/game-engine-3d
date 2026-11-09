@@ -1,6 +1,5 @@
 #include "transforms.h"
 #include <cmath>
-#include <iostream>
 
 constexpr float PI = 3.14159265389;
 
@@ -73,3 +72,4 @@ Mat4 projectionMatrix(float fFov, float fAspectRatio, float fNear, float fFar) {
 
   return result;
 }
+

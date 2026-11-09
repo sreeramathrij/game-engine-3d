@@ -16,7 +16,8 @@ add_executable(barebones
   src/renderer.cpp
   src/transforms.cpp
   src/math.cpp
-  src/model.h
+  src/mesh.h
+  src/model.cpp
 )
 
 target_link_libraries(barebones PRIVATE SDL2::SDL2)

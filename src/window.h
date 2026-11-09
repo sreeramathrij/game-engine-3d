@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h>
 #include "frame_buffer.h"
 
+// Window class to handle SDL window and rendering
 class Window {
 public:
   Window(int width, int height, int scale, FrameBuffer& frameBuffer);
