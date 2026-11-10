@@ -1,11 +1,8 @@
 #pragma once
 
-// #include <cmath>
-// #include <utility>
 #include <vector>
 
 namespace Math {
-
 
 class Mat2;
 class Mat3;

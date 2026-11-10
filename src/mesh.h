@@ -85,6 +85,7 @@ public:
   Mesh(const std::string &fileName) : fileName(fileName) {}
 
   bool loadObjectFromFile() {
+    std::cout << fileName << '\n';
     std::ifstream file(fileName);
     if (!file.is_open())
       return false;

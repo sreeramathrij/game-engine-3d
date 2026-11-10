@@ -55,18 +55,25 @@ int main() {
   Math::Mat4 matProj = projectionMatrix(fFov, fAspectRatio, fNear, fFar);
   
   // Load the teapot mesh from the .obj file
-  Mesh teapotMesh("models/utah_teapot_large.obj");
+  Mesh teapotMesh("models/utah_teapot_frank.obj");
   if (!teapotMesh.loadObjectFromFile()) {
     std::cerr << "Failed to initialize " << "models/utah_teapot_large.obj" << '!' << '\n';
     return 1;
   }
 
+  Mesh axisMesh("models/axis.obj");
+  if (!axisMesh.loadObjectFromFile()) {
+    std::cerr << "Failed to initialize " << "models/axis.obj" << '!' << '\n';
+    return 1;
+  }
 
   Vec3 vCamera;
 
   // Create 2 teapot models with the same teapot mesh
   Model teapot(teapotMesh, renderer, vCamera, matProj);
   Model teapot2(teapotMesh, renderer, vCamera, matProj);
+
+  Model axis(axisMesh, renderer, vCamera, matProj);
 
   // defining the rotation angle and its half for the teapot model transforms
   float fTheta = 2.5f;
@@ -95,18 +102,23 @@ int main() {
       frameBuffer.clear(0xFF884488);
 
       // Model transformations for the teapot models
-      teapot.rotate(Vec3(fThetaBy2, 0, fTheta));
-      teapot.translate(Vec3(0, 0, 10));
+      //teapot.rotate(Vec3(fThetaBy2, 0, fTheta));
+      //teapot.translate(Vec3(0, 0, 10));
 
-      teapot2.rotate(Vec3(fTheta, 0, fThetaBy2));
-      teapot2.translate(Vec3(5, 5, 11));
+      //teapot2.rotate(Vec3(fTheta, 0, fThetaBy2));
+      //teapot2.translate(Vec3(5, 5, 11));
+
+      //axis.rotate(Vec3(0, 0, 0));
+      axis.translate(Vec3(0, 0, 15));
 
       fTheta += 1.0f * dt;
       fThetaBy2 = fTheta / 2.0f;
 
       // Rendering the teapot models
-      teapot.render();
-      teapot2.render();
+      //teapot.render();
+      //teapot2.render();
+
+      axis.render();
       
       // Render the frame buffer to the window
       window.render();
