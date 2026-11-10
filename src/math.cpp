@@ -331,6 +331,14 @@ Math::Vec3 Math::Vec3::operator*(const Math::Mat3 &mat3) {
 
   return result;
 }
+Math::Vec3 Math::Vec3::operator*(const float d){
+  Vec3 result;
+  result.x = x * d;
+  result.y = y * d;
+  result.z = z * d;
+
+  return result;
+}
 
 Math::Vec4::Vec4() : x(0), y(0), z(0), w(0) {}
 Math::Vec4::Vec4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}

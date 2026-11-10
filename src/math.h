@@ -99,6 +99,7 @@ public:
   Vec3 operator+(const Vec3& Vec3);
   Vec3 operator-(const Vec3& Vec3);
   Vec3 operator*(const Mat3& mat3);
+  Vec3 operator*(const float d);
 };
 
 class Vec4 {

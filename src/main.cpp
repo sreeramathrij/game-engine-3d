@@ -102,21 +102,21 @@ int main() {
       frameBuffer.clear(0xFF884488);
 
       // Model transformations for the teapot models
-      //teapot.rotate(Vec3(fThetaBy2, 0, fTheta));
-      //teapot.translate(Vec3(0, 0, 10));
+      teapot.rotate(Vec3(fThetaBy2, 0, fTheta));
+      teapot.translate(Vec3(0, 0, 10));
 
-      //teapot2.rotate(Vec3(fTheta, 0, fThetaBy2));
-      //teapot2.translate(Vec3(5, 5, 11));
+      teapot2.rotate(Vec3(fTheta, 0, fThetaBy2));
+      teapot2.translate(Vec3(5, 5, 11));
 
-      //axis.rotate(Vec3(0, 0, 0));
+      axis.rotate(Vec3(0, 0, 0));
       axis.translate(Vec3(0, 0, 15));
 
       fTheta += 1.0f * dt;
       fThetaBy2 = fTheta / 2.0f;
 
       // Rendering the teapot models
-      //teapot.render();
-      //teapot2.render();
+      teapot.render();
+      teapot2.render();
 
       axis.render();
       
