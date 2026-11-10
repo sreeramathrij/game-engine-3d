@@ -2,7 +2,7 @@
 #include "transforms.h"
 
 
-Model::Model(const Mesh& mesh, Renderer& renderer,const Vec3& cameraPos, const Mat4& projection) : mesh(mesh), renderer(renderer), cameraPos(cameraPos), projection(projection), transform(identityMatrix()){}
+Model::Model(const Mesh& mesh, Renderer& renderer,const Vec3& cameraPos, const Mat4& projection, Mat4& view) : mesh(mesh), renderer(renderer), cameraPos(cameraPos), projection(projection), view(view), transform(identityMatrix()){}
 
 // Rotates the model by multiplying the current transformation matrix with a rotation matrix
 void Model::rotate(const Vec3& rotation){
@@ -27,10 +27,12 @@ void Model::render() {
     //transformedTriangle.vertices[0].display();
     //transformedTriangle.vertices[1].display();
     //transformedTriangle.vertices[2].display();
-    
-    Triangle projectedTriangle = transformedTriangle.getProjectedTriangle(projection); 
 
-    Vec3 vecPoint = (transformedTriangle.vertices[0] - cameraPos).normalize();
+    Triangle viewedTriangle(transformedTriangle.getViewedTriangle(view));
+    
+    Triangle projectedTriangle = viewedTriangle.getProjectedTriangle(projection); 
+
+    Vec3 vecPoint = (viewedTriangle.vertices[0] - cameraPos).normalize();
     //std::cout << "Projected:\n";
     //projectedTriangle.vertices[0].display();
     //projectedTriangle.vertices[1].display();
@@ -38,9 +40,9 @@ void Model::render() {
   
 
     //std::cout << "Normal:\n";
-    //transformedTriangle.normal.display();
+    //viewedTriangle.normal.display();
 
-    float dotProduct = Math::dot(vecPoint, transformedTriangle.normal.normalize());
+    float dotProduct = Math::dot(vecPoint, viewedTriangle.normal.normalize());
     if(dotProduct < 0) {
       uint32_t shade = 159 * std::min(1.0f, std::max(0.0f, -dotProduct)) + 96;
       shade = 0xFF000000 | (shade << 16) | (shade << 8) | (shade);

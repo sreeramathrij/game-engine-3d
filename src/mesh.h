@@ -71,6 +71,18 @@ public:
 
     return projectedTriangle;
   }
+
+  Triangle getViewedTriangle(const Mat4& view) {
+    Triangle viewedTriangle;
+
+    viewedTriangle.vertices[0] = Vec4(vertices[0], 1.0f) * view;
+    viewedTriangle.vertices[1] = Vec4(vertices[1], 1.0f) * view;
+    viewedTriangle.vertices[2] = Vec4(vertices[2], 1.0f) * view;
+
+    viewedTriangle.normal = Vec4(normal, 0.0f) * view;
+
+    return viewedTriangle;
+  }
 };
 
 // Mesh class to represent the mesh of triangles loaded from the obj file

@@ -75,8 +75,11 @@ Mat4 projectionMatrix(float fFov, float fAspectRatio, float fNear, float fFar) {
 
 Mat4 pointAtMatrix(Vec3& pos, Vec3& target, Vec3& up){
   Vec3 newForward = (target - pos).normalize();
-  Vec3 newUp = up - (newForward * newForward.dot(up)).normalize();
+  newForward.display();
+  Vec3 newUp = (up - (newForward * newForward.dot(up))).normalize();
+  newUp.display();
   Vec3 newRight = newUp.cross(newForward);
+  newRight.display();
 
   Mat4 pointAt;
   pointAt[0][0] = newRight.x; pointAt[0][1] = newRight.y; pointAt[0][2] = newRight.z; pointAt[0][3] = 0.0f;

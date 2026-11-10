@@ -14,11 +14,6 @@ constexpr uint32_t BLUE = 0xFF0000FF;
 
 constexpr float PI = 3.14159265389;
 
-void drawLine(float ax, float ay, float bx, float by, uint32_t color,
-              FrameBuffer &frameBuffer);
-void drawRectangle(float xPos, float yPos, int width, int height,
-                   uint32_t color, FrameBuffer &frameBuffer);
-
 int main() {
 
   /*
@@ -68,12 +63,32 @@ int main() {
   }
 
   Vec3 vCamera;
+  Vec3 vLookDir(0, 0, 1);
+
+  Vec3 vUp(0, 1, 0);
+  Vec3 vTarget = vCamera + vLookDir;
+
+  Mat4 matCamera = pointAtMatrix(vCamera, vTarget, vUp);
+  std::cout << "Camera:\n";
+  std::cout << matCamera[0][0] << ' ' << matCamera[0][1] << ' ' << matCamera[0][1] << ' ' << matCamera[0][1] << '\n';
+  std::cout << matCamera[1][0] << ' ' << matCamera[1][1] << ' ' << matCamera[1][1] << ' ' << matCamera[1][1] << '\n';
+  std::cout << matCamera[2][0] << ' ' << matCamera[2][1] << ' ' << matCamera[2][1] << ' ' << matCamera[2][1] << '\n';
+  std::cout << matCamera[3][0] << ' ' << matCamera[3][1] << ' ' << matCamera[3][1] << ' ' << matCamera[3][1] << '\n';
+
+
+  Mat4 matView = lookAtMatrix(matCamera);
+  std::cout << "View:\n";
+  std::cout << matView[0][0]<< ' ' << matView[0][1] << ' ' << matView[0][1] << ' ' << matView[0][1] << '\n';
+  std::cout << matView[1][0]<< ' ' << matView[1][1] << ' ' << matView[1][1] << ' ' << matView[1][1] << '\n';
+  std::cout << matView[2][0]<< ' ' << matView[2][1] << ' ' << matView[2][1] << ' ' << matView[2][1] << '\n';
+  std::cout << matView[3][0]<< ' ' << matView[3][1] << ' ' << matView[3][1] << ' ' << matView[3][1] << '\n';
+
 
   // Create 2 teapot models with the same teapot mesh
-  Model teapot(teapotMesh, renderer, vCamera, matProj);
-  Model teapot2(teapotMesh, renderer, vCamera, matProj);
+  Model teapot(teapotMesh, renderer, vCamera, matProj, matView);
+  Model teapot2(teapotMesh, renderer, vCamera, matProj, matView);
 
-  Model axis(axisMesh, renderer, vCamera, matProj);
+  Model axis(axisMesh, renderer, vCamera, matProj, matView);
 
   // defining the rotation angle and its half for the teapot model transforms
   float fTheta = 2.5f;
