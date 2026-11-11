@@ -421,5 +421,18 @@ float Math::dot(const Math::Vec3& v1, const Math::Vec3& v2) {
   return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 }
 
+Math::Vec3 Math::intersectPlane(Vec3& planeP, Vec3& planeN, Vec3& lineStart, Vec3& lineEnd){
+  planeN.normalize();
+  float planeD = - (planeN.dot(planeP));
+
+  float ad = lineStart.dot(planeN);
+  float bd = lineEnd.dot(planeN);
+  float t = (-planeD - ad) / (bd - ad);
+
+  Vec3 lineStartToEnd = lineEnd - lineStart;
+  Vec3 lineToIntersect = lineStartToEnd * t;
+
+  return lineStart + lineToIntersect;
+}
 
 

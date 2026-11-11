@@ -10,7 +10,7 @@ public:
   ~Window();
   bool init();
 
-  bool pollEvents();
+  bool pollEvents(int& mouseX, int& mouseY, float& cameraX, float& cameraY, float& cameraZ);
   void render();
 
 private:

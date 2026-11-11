@@ -66,13 +66,40 @@ bool Window::init() {
 }
 
 // Poll events for the window, returns false if the window should close (SDL_QUIT or ESC key pressed)
-bool Window::pollEvents() {
+bool Window::pollEvents(int& mouseX, int& mouseY, float& xVel, float& yVel, float& zVel) {
   SDL_Event e;
   while (SDL_PollEvent(&e)) {
-    if (e.type == SDL_QUIT)
-      return false;
-    if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE)
-      return false;
+    switch(e.type) {
+      case SDL_KEYDOWN:
+        switch(e.key.keysym.sym) {
+          case SDLK_w:
+            zVel += 1.0f;
+            break;
+          case SDLK_s:
+            zVel -= 1.0f;
+            break;
+          case SDLK_a:
+            xVel += 1.0f;
+            break;
+          case SDLK_d:
+            xVel -= 1.0f;
+            break;
+          case SDLK_SPACE:
+            yVel += 1.0f;
+            break;
+          case SDLK_TAB:
+            yVel -= 1.0f;
+            break;
+          case SDLK_ESCAPE:
+            return false;
+        }
+      case SDL_MOUSEMOTION:
+        mouseX = e.motion.x;
+        mouseY = e.motion.y;
+        break;
+      case SDL_QUIT:
+        return false;
+    }
   }
   return true;
 }

@@ -5,6 +5,7 @@
 #include "timer.h"
 #include "window.h"
 #include "transforms.h"
+#include <cmath>
 
 constexpr uint32_t BLACK = 0xFF000000;
 constexpr uint32_t WHITE = 0xFFFFFFFF;
@@ -13,6 +14,8 @@ constexpr uint32_t GREEN = 0xFF00FF00;
 constexpr uint32_t BLUE = 0xFF0000FF;
 
 constexpr float PI = 3.14159265389;
+constexpr float mouseSensitivity = 10.0f;
+
 
 int main() {
 
@@ -62,13 +65,16 @@ int main() {
     return 1;
   }
 
-  Vec3 vCamera;
-  Vec3 vLookDir(0, 0, 1);
+  float yaw = 0, pitch = 0;
 
-  Vec3 vUp(0, 1, 0);
+  Vec3 vCamera;
+  Vec3 vLookDir( std::cos(yaw) * std::sin(pitch),std::sin(pitch), std::cos(yaw) * std::cos(pitch) );
   Vec3 vTarget = vCamera + vLookDir;
 
-  Mat4 matCamera = pointAtMatrix(vCamera, vTarget, vUp);
+  Vec3 vUp(0, 1, 0);
+
+  Mat4 matCamera;
+  pointAtMatrix(vCamera, vTarget, vUp, matCamera);
   std::cout << "Camera:\n";
   std::cout << matCamera[0][0] << ' ' << matCamera[0][1] << ' ' << matCamera[0][1] << ' ' << matCamera[0][1] << '\n';
   std::cout << matCamera[1][0] << ' ' << matCamera[1][1] << ' ' << matCamera[1][1] << ' ' << matCamera[1][1] << '\n';
@@ -76,7 +82,8 @@ int main() {
   std::cout << matCamera[3][0] << ' ' << matCamera[3][1] << ' ' << matCamera[3][1] << ' ' << matCamera[3][1] << '\n';
 
 
-  Mat4 matView = lookAtMatrix(matCamera);
+  Mat4 matView;
+  lookAtMatrix(matCamera, matView);
   std::cout << "View:\n";
   std::cout << matView[0][0]<< ' ' << matView[0][1] << ' ' << matView[0][1] << ' ' << matView[0][1] << '\n';
   std::cout << matView[1][0]<< ' ' << matView[1][1] << ' ' << matView[1][1] << ' ' << matView[1][1] << '\n';
@@ -89,6 +96,9 @@ int main() {
   Model teapot2(teapotMesh, renderer, vCamera, matProj, matView);
 
   Model axis(axisMesh, renderer, vCamera, matProj, matView);
+
+  int mouseX, mouseY, earlyMouseX = 0, earlyMouseY = 0;
+  float xVel, yVel, zVel;
 
   // defining the rotation angle and its half for the teapot model transforms
   float fTheta = 2.5f;
@@ -111,27 +121,54 @@ int main() {
       // std::cout << "FPS: " << 1 / dt << '\n' << '\n';
 
       // Poll for events and check if the window is still running
-      running = window.pollEvents();
+      xVel = 0; yVel = 0; zVel = 0;
+      running = window.pollEvents(mouseX, mouseY, xVel, yVel, zVel);
+      float deltaYaw = mouseSensitivity * (mouseX - earlyMouseX)  * 0.0174 * dt;
+      float deltaPitch = mouseSensitivity * (mouseY - earlyMouseY) * 0.0174 * dt;
+      earlyMouseX = mouseX;
+      earlyMouseY = mouseY;
 
+      vCamera = vCamera + (Vec3(xVel, yVel, zVel) * dt);
+      vCamera.display();
 
       frameBuffer.clear(0xFF884488);
+      
+      yaw += deltaYaw;
+      if(yaw <= 0) {
+        yaw = 0;
+      }
+      if(yaw >= 2*PI) {
+        yaw = 2*PI;
+      }
+      pitch -= deltaPitch;
+      if(pitch <= -(PI * 0.5f - 0.01f)) {
+        pitch = -(PI * 0.5f - 0.01f);
+      }
+      if( pitch >= (PI * 0.5f - 0.01f) ) {
+        pitch = (PI* - 0.01f);
+      }
+      std::cout << "yaw: " << yaw << ", deltaYaw: " << deltaYaw << ", pitch: " << pitch << ", deltaPitch: " << deltaPitch  << '\n';
+      vLookDir = Vec3( std::cos(pitch) * std::sin(yaw),std::sin(pitch), std::cos(pitch) * std::cos(yaw) );
+      vTarget = vCamera + vLookDir;
+      pointAtMatrix(vCamera, vTarget, vUp, matCamera);
+      lookAtMatrix(matCamera, matView);
 
       // Model transformations for the teapot models
-      teapot.rotate(Vec3(fThetaBy2, 0, fTheta));
-      teapot.translate(Vec3(0, 0, 10));
+      //teapot.rotate(Vec3(fThetaBy2, 0, fTheta));
+      //teapot.translate(Vec3(0, 0, 10));
 
-      teapot2.rotate(Vec3(fTheta, 0, fThetaBy2));
-      teapot2.translate(Vec3(5, 5, 11));
+      //teapot2.rotate(Vec3(fTheta, 0, fThetaBy2));
+      //teapot2.translate(Vec3(5, 5, 11));
 
       axis.rotate(Vec3(0, 0, 0));
-      axis.translate(Vec3(0, 0, 15));
+      axis.translate(Vec3(0, 0, 5));
 
       fTheta += 1.0f * dt;
       fThetaBy2 = fTheta / 2.0f;
 
       // Rendering the teapot models
-      teapot.render();
-      teapot2.render();
+      //teapot.render();
+      //teapot2.render();
 
       axis.render();
       

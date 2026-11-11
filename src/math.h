@@ -128,4 +128,6 @@ float triangleArea(float ax, float ay, float bx, float by, float cx, float cy);
 float intTriangleArea(int ax, int ay, int bx, int by, int cx, int cy);
 
 float dot(const Vec3& v1, const Vec3& v2);
+
+Vec3 intersectPlane(Vec3& planeP, Vec3& planeN, Vec3& lineStart, Vec3& lineEnd);
 } // namespace Math
