@@ -118,9 +118,9 @@ int main() {
     dt = (now - then) / 1000.0f;
 
     // To set the frame rate to 60 FPS, check if the delta time is greater than 1/60 seconds (0.016 seconds)
-    if (dt > 0.016f) {
+    if (dt > 0.05f) {
       // std::cout << "Delta: " << dt << '\n';
-      // std::cout << "FPS: " << 1 / dt << '\n' << '\n';
+      std::cout << "FPS: " << 1 / dt << '\n' << '\n';
 
       // Poll for events and check if the window is still running
             int poll = window.pollEvents(mouseX, mouseY);
@@ -146,9 +146,9 @@ int main() {
         pitch = -(PI * 0.5f - 0.01f);
       }
       if( pitch >= (PI * 0.5f - 0.01f) ) {
-        pitch = (PI* - 0.01f);
+        pitch = (PI * 0.5f - 0.01f);
       }
-      std::cout << "yaw: " << yaw << ", deltaYaw: " << deltaYaw << ", pitch: " << pitch << ", deltaPitch: " << deltaPitch  << '\n';
+      // std::cout << "yaw: " << yaw << ", deltaYaw: " << deltaYaw << ", pitch: " << pitch << ", deltaPitch: " << deltaPitch  << '\n';
       vLookDir = Vec3( std::cos(pitch) * std::sin(yaw),std::sin(pitch), std::cos(pitch) * std::cos(yaw) );
       vTarget = vCamera + vLookDir;
       pointAtMatrix(vCamera, vTarget, vUp, matCamera);
@@ -157,11 +157,11 @@ int main() {
       up = (vUp - (forward * forward.dot(vUp))).normalize();
       right = up.cross(forward);
 
-      forward.display();
-      up.display();
-      right.display();
+      // forward.display();
+      // up.display();
+      // right.display();
 
-      std::cout << poll << ' ' << WindowSDL::W << '\n';
+      // std::cout << poll << ' ' << WindowSDL::W << '\n';
       if(poll == WindowSDL::W) vCamera = vCamera + ((forward * dt) * cameraSpeed);
       if(poll == WindowSDL::A) vCamera = vCamera - ((right * dt) * cameraSpeed);
       if(poll == WindowSDL::S) vCamera = vCamera - ((forward * dt) * cameraSpeed);
