@@ -2,11 +2,11 @@
 #include <iostream>
 
 // Contructor for the Window class, initializes the window with given width, height, scale and a reference to the FrameBuffer object
-Window::Window(int width, int height, int scale, FrameBuffer &frameBuffer)
+WindowSDL::Window::Window(int width, int height, int scale, FrameBuffer &frameBuffer)
     : width(width), height(height), scale(scale), window(nullptr),
       renderer(nullptr), texture(nullptr), frameBuffer(frameBuffer) {}
 
-Window::~Window() {
+WindowSDL::Window::~Window() {
   if (texture)
     SDL_DestroyTexture(texture);
   if (renderer)
@@ -17,7 +17,7 @@ Window::~Window() {
 }
 
 // Initializes SDL, creates the window, renderer and texture
-bool Window::init() {
+bool WindowSDL::Window::init() {
   // Initialize defaults, Video
   if (SDL_Init(SDL_INIT_VIDEO) == -1) {
     std::cerr << "Could not initialize SDL: " << SDL_GetError() << '\n';
@@ -39,6 +39,14 @@ bool Window::init() {
     std::cerr << "Could not initialize SDL: " << SDL_GetError() << '\n';
     return false;
   }
+
+  SDL_ShowCursor(SDL_DISABLE);
+  SDL_SetWindowGrab(window, SDL_TRUE);
+  
+  int centerX = width / 2;
+  int centerY = height / 2;
+  SDL_WarpMouseInWindow(window, centerX, centerY);
+
 
   // Printing the renderer information
   SDL_RendererInfo info;
@@ -66,46 +74,37 @@ bool Window::init() {
 }
 
 // Poll events for the window, returns false if the window should close (SDL_QUIT or ESC key pressed)
-bool Window::pollEvents(int& mouseX, int& mouseY, float& xVel, float& yVel, float& zVel) {
+int WindowSDL::Window::pollEvents(int& mouseX, int& mouseY){
   SDL_Event e;
+  int poll = -1;
   while (SDL_PollEvent(&e)) {
+
+    const Uint8* state = SDL_GetKeyboardState(NULL);
+    if(state[SDL_SCANCODE_W]) poll = W;
+    else if(state[SDL_SCANCODE_S]) poll = S; 
+    else if(state[SDL_SCANCODE_A]) poll = A;
+    else if(state[SDL_SCANCODE_D]) poll = D;
+    else if(state[SDL_SCANCODE_SPACE]) poll = SPACE;
+    else if(state[SDL_SCANCODE_TAB]) poll = TAB;
+    else if(state[SDL_SCANCODE_ESCAPE]) poll = QUIT;
+
     switch(e.type) {
-      case SDL_KEYDOWN:
-        switch(e.key.keysym.sym) {
-          case SDLK_w:
-            zVel += 1.0f;
-            break;
-          case SDLK_s:
-            zVel -= 1.0f;
-            break;
-          case SDLK_a:
-            xVel += 1.0f;
-            break;
-          case SDLK_d:
-            xVel -= 1.0f;
-            break;
-          case SDLK_SPACE:
-            yVel += 1.0f;
-            break;
-          case SDLK_TAB:
-            yVel -= 1.0f;
-            break;
-          case SDLK_ESCAPE:
-            return false;
-        }
       case SDL_MOUSEMOTION:
         mouseX = e.motion.x;
         mouseY = e.motion.y;
+        poll = MOUSE_MOTION;
         break;
       case SDL_QUIT:
-        return false;
+        poll = QUIT;
+        break;
     }
   }
-  return true;
+  return poll;
 }
 
 // Renders the current frame buffer to the window
-void Window::render() {
+void WindowSDL::Window::render() {
+  
   SDL_UpdateTexture(texture, nullptr, frameBuffer.const_getPixels().data(),
                     frameBuffer.getWidth() * sizeof(uint32_t));
   SDL_RenderClear(renderer);

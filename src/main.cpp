@@ -14,7 +14,8 @@ constexpr uint32_t GREEN = 0xFF00FF00;
 constexpr uint32_t BLUE = 0xFF0000FF;
 
 constexpr float PI = 3.14159265389;
-constexpr float mouseSensitivity = 10.0f;
+constexpr float mouseSensitivity = 30.0f;
+constexpr float cameraSpeed = 5.0f;
 
 
 int main() {
@@ -35,7 +36,7 @@ int main() {
 
   // Initialize the frame buffer and window object
   FrameBuffer frameBuffer(W, H);
-  Window window(W, H, SCALE, frameBuffer);
+  WindowSDL::Window window(W, H, SCALE, frameBuffer);
   if (!(window.init())) {
     return 1;
   }
@@ -73,6 +74,7 @@ int main() {
 
   Vec3 vUp(0, 1, 0);
 
+  Vec3 forward, up, right;
   Mat4 matCamera;
   pointAtMatrix(vCamera, vTarget, vUp, matCamera);
   std::cout << "Camera:\n";
@@ -121,24 +123,23 @@ int main() {
       // std::cout << "FPS: " << 1 / dt << '\n' << '\n';
 
       // Poll for events and check if the window is still running
-      xVel = 0; yVel = 0; zVel = 0;
-      running = window.pollEvents(mouseX, mouseY, xVel, yVel, zVel);
+            int poll = window.pollEvents(mouseX, mouseY);
+      if(poll == WindowSDL::QUIT) {
+        running = false;
+      }
+
       float deltaYaw = mouseSensitivity * (mouseX - earlyMouseX)  * 0.0174 * dt;
       float deltaPitch = mouseSensitivity * (mouseY - earlyMouseY) * 0.0174 * dt;
       earlyMouseX = mouseX;
       earlyMouseY = mouseY;
-
-      vCamera = vCamera + (Vec3(xVel, yVel, zVel) * dt);
-      vCamera.display();
-
       frameBuffer.clear(0xFF884488);
       
       yaw += deltaYaw;
-      if(yaw <= 0) {
-        yaw = 0;
+      if(yaw <= -0.01f) {
+        yaw = 2*PI - 0.01f;
       }
       if(yaw >= 2*PI) {
-        yaw = 2*PI;
+        yaw = 0;
       }
       pitch -= deltaPitch;
       if(pitch <= -(PI * 0.5f - 0.01f)) {
@@ -151,6 +152,23 @@ int main() {
       vLookDir = Vec3( std::cos(pitch) * std::sin(yaw),std::sin(pitch), std::cos(pitch) * std::cos(yaw) );
       vTarget = vCamera + vLookDir;
       pointAtMatrix(vCamera, vTarget, vUp, matCamera);
+      
+      forward = (vTarget - vCamera).normalize();
+      up = (vUp - (forward * forward.dot(vUp))).normalize();
+      right = up.cross(forward);
+
+      forward.display();
+      up.display();
+      right.display();
+
+      std::cout << poll << ' ' << WindowSDL::W << '\n';
+      if(poll == WindowSDL::W) vCamera = vCamera + ((forward * dt) * cameraSpeed);
+      if(poll == WindowSDL::A) vCamera = vCamera - ((right * dt) * cameraSpeed);
+      if(poll == WindowSDL::S) vCamera = vCamera - ((forward * dt) * cameraSpeed);
+      if(poll == WindowSDL::D) vCamera = vCamera + ((right * dt) * cameraSpeed);
+      if(poll == WindowSDL::SPACE) vCamera = vCamera + ((up * dt) * cameraSpeed);
+      if(poll == WindowSDL::TAB) vCamera = vCamera - ((up * dt) * cameraSpeed);
+
       lookAtMatrix(matCamera, matView);
 
       // Model transformations for the teapot models

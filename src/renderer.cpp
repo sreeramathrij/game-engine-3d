@@ -185,7 +185,6 @@ int Renderer::triangleClipAtPlane(Vec3& planeP, Vec3& planeN, Triangle& inTri, T
 
   // Return signed shortes distance from point to plane, plane normal must be a normal vector
   auto dist = [&](Vec3& p) {
-    Vec3 n = p.normalize();
     return (planeN.dot(p) - planeN.dot(planeP));
   };
 
