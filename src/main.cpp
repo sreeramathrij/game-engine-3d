@@ -3,8 +3,8 @@
 #include "model.h"
 #include "renderer.h"
 #include "timer.h"
-#include "window.h"
 #include "transforms.h"
+#include "window.h"
 #include <cmath>
 
 constexpr uint32_t BLACK = 0xFF000000;
@@ -16,7 +16,6 @@ constexpr uint32_t BLUE = 0xFF0000FF;
 constexpr float PI = 3.14159265389;
 constexpr float mouseSensitivity = 30.0f;
 constexpr float cameraSpeed = 5.0f;
-
 
 int main() {
 
@@ -49,14 +48,16 @@ int main() {
   float fNear = 0.1f;
   float fFar = 1000.0f;
   float fFov = 90.0f;
-  float fAspectRatio = frameBuffer.getHeight() / static_cast<float>(frameBuffer.getWidth());
+  float fAspectRatio =
+      frameBuffer.getHeight() / static_cast<float>(frameBuffer.getWidth());
   float fFovRad = 1.0f / std::tan(fFov * 0.5f * (PI / 180.0f));
   Math::Mat4 matProj = projectionMatrix(fFov, fAspectRatio, fNear, fFar);
-  
+
   // Load the teapot mesh from the .obj file
   Mesh teapotMesh("models/utah_teapot_frank.obj");
   if (!teapotMesh.loadObjectFromFile()) {
-    std::cerr << "Failed to initialize " << "models/utah_teapot_large.obj" << '!' << '\n';
+    std::cerr << "Failed to initialize " << "models/utah_teapot_large.obj"
+              << '!' << '\n';
     return 1;
   }
 
@@ -69,7 +70,8 @@ int main() {
   float yaw = 0, pitch = 0;
 
   Vec3 vCamera;
-  Vec3 vLookDir( std::cos(yaw) * std::sin(pitch),std::sin(pitch), std::cos(yaw) * std::cos(pitch) );
+  Vec3 vLookDir(std::cos(yaw) * std::sin(pitch), std::sin(pitch),
+                std::cos(yaw) * std::cos(pitch));
   Vec3 vTarget = vCamera + vLookDir;
 
   Vec3 vUp(0, 1, 0);
@@ -78,20 +80,26 @@ int main() {
   Mat4 matCamera;
   pointAtMatrix(vCamera, vTarget, vUp, matCamera);
   std::cout << "Camera:\n";
-  std::cout << matCamera[0][0] << ' ' << matCamera[0][1] << ' ' << matCamera[0][1] << ' ' << matCamera[0][1] << '\n';
-  std::cout << matCamera[1][0] << ' ' << matCamera[1][1] << ' ' << matCamera[1][1] << ' ' << matCamera[1][1] << '\n';
-  std::cout << matCamera[2][0] << ' ' << matCamera[2][1] << ' ' << matCamera[2][1] << ' ' << matCamera[2][1] << '\n';
-  std::cout << matCamera[3][0] << ' ' << matCamera[3][1] << ' ' << matCamera[3][1] << ' ' << matCamera[3][1] << '\n';
-
+  std::cout << matCamera[0][0] << ' ' << matCamera[0][1] << ' '
+            << matCamera[0][1] << ' ' << matCamera[0][1] << '\n';
+  std::cout << matCamera[1][0] << ' ' << matCamera[1][1] << ' '
+            << matCamera[1][1] << ' ' << matCamera[1][1] << '\n';
+  std::cout << matCamera[2][0] << ' ' << matCamera[2][1] << ' '
+            << matCamera[2][1] << ' ' << matCamera[2][1] << '\n';
+  std::cout << matCamera[3][0] << ' ' << matCamera[3][1] << ' '
+            << matCamera[3][1] << ' ' << matCamera[3][1] << '\n';
 
   Mat4 matView;
   lookAtMatrix(matCamera, matView);
   std::cout << "View:\n";
-  std::cout << matView[0][0]<< ' ' << matView[0][1] << ' ' << matView[0][1] << ' ' << matView[0][1] << '\n';
-  std::cout << matView[1][0]<< ' ' << matView[1][1] << ' ' << matView[1][1] << ' ' << matView[1][1] << '\n';
-  std::cout << matView[2][0]<< ' ' << matView[2][1] << ' ' << matView[2][1] << ' ' << matView[2][1] << '\n';
-  std::cout << matView[3][0]<< ' ' << matView[3][1] << ' ' << matView[3][1] << ' ' << matView[3][1] << '\n';
-
+  std::cout << matView[0][0] << ' ' << matView[0][1] << ' ' << matView[0][1]
+            << ' ' << matView[0][1] << '\n';
+  std::cout << matView[1][0] << ' ' << matView[1][1] << ' ' << matView[1][1]
+            << ' ' << matView[1][1] << '\n';
+  std::cout << matView[2][0] << ' ' << matView[2][1] << ' ' << matView[2][1]
+            << ' ' << matView[2][1] << '\n';
+  std::cout << matView[3][0] << ' ' << matView[3][1] << ' ' << matView[3][1]
+            << ' ' << matView[3][1] << '\n';
 
   // Create 2 teapot models with the same teapot mesh
   Model teapot(teapotMesh, renderer, vCamera, matProj, matView);
@@ -106,6 +114,8 @@ int main() {
   float fTheta = 2.5f;
   float fThetaBy2 = fTheta / 2.0f;
 
+  std::vector<int> keysPressed;
+
   // main loop to display window
   bool running = true;
   Uint32 then = Timer::getTick();
@@ -117,66 +127,85 @@ int main() {
     now = Timer::getTick();
     dt = (now - then) / 1000.0f;
 
-    // To set the frame rate to 60 FPS, check if the delta time is greater than 1/60 seconds (0.016 seconds)
-    if (dt > 0.05f) {
+    // To set the frame rate to 60 FPS, check if the delta time is greater than
+    // 1/60 seconds (0.016 seconds)
+    if (dt > 0.033f) {
       // std::cout << "Delta: " << dt << '\n';
-      std::cout << "FPS: " << 1 / dt << '\n' << '\n';
+      // std::cout << "FPS: " << 1 / dt << '\n' << '\n';
 
       // Poll for events and check if the window is still running
-            int poll = window.pollEvents(mouseX, mouseY);
-      if(poll == WindowSDL::QUIT) {
+      int poll = window.pollEvents(mouseX, mouseY, keysPressed);
+      if (poll == WindowSDL::QUIT) {
         running = false;
       }
 
-      float deltaYaw = mouseSensitivity * (mouseX - earlyMouseX)  * 0.0174 * dt;
-      float deltaPitch = mouseSensitivity * (mouseY - earlyMouseY) * 0.0174 * dt;
+      float deltaYaw = mouseSensitivity * (mouseX - earlyMouseX) * 0.0174 * dt;
+      float deltaPitch =
+          mouseSensitivity * (mouseY - earlyMouseY) * 0.0174 * dt;
       earlyMouseX = mouseX;
       earlyMouseY = mouseY;
       frameBuffer.clear(0xFF884488);
-      
+
       yaw += deltaYaw;
-      if(yaw <= -0.01f) {
-        yaw = 2*PI - 0.01f;
+      if (yaw <= -0.01f) {
+        yaw = 2 * PI - 0.01f;
       }
-      if(yaw >= 2*PI) {
+      if (yaw >= 2 * PI) {
         yaw = 0;
       }
       pitch -= deltaPitch;
-      if(pitch <= -(PI * 0.5f - 0.01f)) {
+      if (pitch <= -(PI * 0.5f - 0.01f)) {
         pitch = -(PI * 0.5f - 0.01f);
       }
-      if( pitch >= (PI * 0.5f - 0.01f) ) {
+      if (pitch >= (PI * 0.5f - 0.01f)) {
         pitch = (PI * 0.5f - 0.01f);
       }
-      // std::cout << "yaw: " << yaw << ", deltaYaw: " << deltaYaw << ", pitch: " << pitch << ", deltaPitch: " << deltaPitch  << '\n';
-      vLookDir = Vec3( std::cos(pitch) * std::sin(yaw),std::sin(pitch), std::cos(pitch) * std::cos(yaw) );
+      // std::cout << "yaw: " << yaw << ", deltaYaw: " << deltaYaw << ", pitch:
+      // " << pitch << ", deltaPitch: " << deltaPitch  << '\n';
+      vLookDir = Vec3(std::cos(pitch) * std::sin(yaw), std::sin(pitch),
+                      std::cos(pitch) * std::cos(yaw));
       vTarget = vCamera + vLookDir;
       pointAtMatrix(vCamera, vTarget, vUp, matCamera);
-      
+
       forward = (vTarget - vCamera).normalize();
       up = (vUp - (forward * forward.dot(vUp))).normalize();
-      right = up.cross(forward);
+      right = (up.cross(forward)).normalize();
 
       // forward.display();
       // up.display();
       // right.display();
 
-      // std::cout << poll << ' ' << WindowSDL::W << '\n';
-      if(poll == WindowSDL::W) vCamera = vCamera + ((forward * dt) * cameraSpeed);
-      if(poll == WindowSDL::A) vCamera = vCamera - ((right * dt) * cameraSpeed);
-      if(poll == WindowSDL::S) vCamera = vCamera - ((forward * dt) * cameraSpeed);
-      if(poll == WindowSDL::D) vCamera = vCamera + ((right * dt) * cameraSpeed);
-      if(poll == WindowSDL::SPACE) vCamera = vCamera + ((up * dt) * cameraSpeed);
-      if(poll == WindowSDL::TAB) vCamera = vCamera - ((up * dt) * cameraSpeed);
+      Vec3 moveDir = Vec3(0.0f, 0.0f, 0.0f);
+      if (keysPressed.size() > 0) {
+        for (int key : keysPressed) {
+          if (key == WindowSDL::W) {
+            moveDir = moveDir + forward;
+          } else if (key == WindowSDL::S) {
+            moveDir = moveDir - forward;
+          } else if (key == WindowSDL::A) {
+            moveDir = moveDir - right;
+          } else if (key == WindowSDL::D) {
+            moveDir = moveDir + right;
+          } else if (key == WindowSDL::SPACE) {
+            moveDir = moveDir + up;
+          } else if (key == WindowSDL::TAB) {
+            moveDir = moveDir - up;
+          }
+        }
+        moveDir.normalize();
+        keysPressed.clear();
+      }
+
+      vCamera = vCamera + ((moveDir * dt) * cameraSpeed);
 
       lookAtMatrix(matCamera, matView);
 
       // Model transformations for the teapot models
-      //teapot.rotate(Vec3(fThetaBy2, 0, fTheta));
-      //teapot.translate(Vec3(0, 0, 10));
+      teapot.rotate(Vec3(fThetaBy2, 0, fTheta));
+      teapot.translate(Vec3(0, 0, 10));
 
-      //teapot2.rotate(Vec3(fTheta, 0, fThetaBy2));
-      //teapot2.translate(Vec3(5, 5, 11));
+      teapot2.rotate(Vec3(fTheta, 0, fThetaBy2));
+      teapot2.translate(Vec3(5, 5, 11));
 
       axis.rotate(Vec3(0, 0, 0));
       axis.translate(Vec3(0, 0, 5));
@@ -185,11 +214,11 @@ int main() {
       fThetaBy2 = fTheta / 2.0f;
 
       // Rendering the teapot models
-      //teapot.render();
-      //teapot2.render();
+      teapot.render();
+      teapot2.render();
 
       axis.render();
-      
+
       // Render the frame buffer to the window
       window.render();
       then = now;
@@ -199,4 +228,3 @@ int main() {
   std::cout << "Quitting SDL.... \n";
   return 0;
 }
-

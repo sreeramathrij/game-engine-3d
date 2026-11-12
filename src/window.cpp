@@ -74,19 +74,19 @@ bool WindowSDL::Window::init() {
 }
 
 // Poll events for the window, returns false if the window should close (SDL_QUIT or ESC key pressed)
-int WindowSDL::Window::pollEvents(int& mouseX, int& mouseY){
+int WindowSDL::Window::pollEvents(int& mouseX, int& mouseY, std::vector<int>& keysPressed){
   SDL_Event e;
   int poll = -1;
   while (SDL_PollEvent(&e)) {
 
     const Uint8* state = SDL_GetKeyboardState(NULL);
-    if(state[SDL_SCANCODE_W]) poll = W;
-    else if(state[SDL_SCANCODE_S]) poll = S; 
-    else if(state[SDL_SCANCODE_A]) poll = A;
-    else if(state[SDL_SCANCODE_D]) poll = D;
-    else if(state[SDL_SCANCODE_SPACE]) poll = SPACE;
-    else if(state[SDL_SCANCODE_TAB]) poll = TAB;
-    else if(state[SDL_SCANCODE_ESCAPE]) poll = QUIT;
+    if(state[SDL_SCANCODE_W]) keysPressed.push_back(W);
+    if(state[SDL_SCANCODE_S]) keysPressed.push_back(S);
+    if(state[SDL_SCANCODE_A]) keysPressed.push_back(A);
+    if(state[SDL_SCANCODE_D]) keysPressed.push_back(D);
+    if(state[SDL_SCANCODE_SPACE]) keysPressed.push_back(SPACE);
+    if(state[SDL_SCANCODE_TAB]) keysPressed.push_back(TAB);
+    if(state[SDL_SCANCODE_ESCAPE]) keysPressed.push_back(QUIT);
 
     switch(e.type) {
       case SDL_MOUSEMOTION:

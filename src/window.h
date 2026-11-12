@@ -2,6 +2,7 @@
 
 #include "frame_buffer.h"
 #include <SDL2/SDL.h>
+#include <vector>
 
 namespace WindowSDL {
 enum POLL_EVENTS { QUIT, MOUSE_MOTION, W, A, S, D, SPACE, TAB };
@@ -13,7 +14,7 @@ public:
   ~Window();
   bool init();
 
-  int pollEvents(int &mouseX, int &mouseY);
+  int pollEvents(int &mouseX, int &mouseY, std::vector<int>& keysPressed);
   void render();
 
 private:
